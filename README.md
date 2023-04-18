@@ -1,9 +1,10 @@
-# Instagram Follow Bot
+# Instagram Bot
 
-This Instagram Follow Bot is a Python script designed to automate the process of following and unfollowing users on Instagram. It uses the instagrapi library to interact with the Instagram API, fetching followers of specified source accounts, and following a limited number of users daily. After a specified time interval, the bot will automatically unfollow the users it previously followed.
+This Instagram Bot is a Python script designed to automate the process of managing Instagram account(s). It uses the instagrapi library to interact with the Instagram API.
 
 Please note that using automated scripts to interact with Instagram can be against their terms of service, and your account may be at risk of being temporarily or permanently banned. Use this script at your own risk.
-Features
+
+Current Features
 
 - Follow users from specified source accounts
 - Follow a configurable number of users daily
