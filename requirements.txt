@@ -1,0 +1,3 @@
+instagrapi==1.7.3
+instaloader==4.8.1
+requests==2.26.0
