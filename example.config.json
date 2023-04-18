@@ -1,0 +1,15 @@
+{
+    "account": {
+            "username": "username",
+            "password": "password"
+    },
+    "source_accounts": [
+        "instagram"
+    ],
+    "followers_index_limit": 5,
+    "daily_follow_limit": 100,
+    "daily_unfollow_limit": 24,
+    "follow_interval": [900, 1600],
+    "unfollow_interval": [450, 800],
+    "unfollow_after": 86400
+}
