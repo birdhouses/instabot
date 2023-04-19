@@ -4,8 +4,7 @@ This Instagram Bot is a Python script designed to automate the process of managi
 
 Please note that using automated scripts to interact with Instagram can be against their terms of service, and your account may be at risk of being temporarily or permanently banned. Use this script at your own risk.
 
-Current Features
-0
+# Current Features
 - Follow users from specified source accounts
 - Follow a configurable number of users daily
 - Unfollow users after a specified time interval
