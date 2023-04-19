@@ -4,19 +4,19 @@ This Instagram Bot is a Python script designed to automate the process of managi
 
 Please note that using automated scripts to interact with Instagram can be against their terms of service, and your account may be at risk of being temporarily or permanently banned. Use this script at your own risk.
 
-# Current Features
+### Current Features
 - Follow users from specified source accounts
 - Follow a configurable number of users daily
 - Unfollow users after a specified time interval
 - Random intervals between follow and unfollow actions
 - Logging of followed and unfollowed users
 
-# Prerequisites
+### Prerequisites
 
 - Python 3.6+
 - instagrapi library
 
-# Installation
+### Installation
 
 Clone this repository:
 
@@ -48,7 +48,7 @@ json
           "unfollow_interval": [100, 200]
         }
 
-# Usage
+### Usage
 
 Run the script:
 
@@ -61,7 +61,7 @@ After the specified unfollow_after time interval, the bot will start unfollowing
 The script will keep running indefinitely, repeating the follow and unfollow process.
 
 
-# Known Limitations
+### Known Limitations
 
 This project is designed to help automate Instagram interactions, such as following and unfollowing users. While it can be a useful tool, there are a few known limitations that users should be aware of:
 
