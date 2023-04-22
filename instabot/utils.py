@@ -1,62 +1,78 @@
 from instagrapi import Client
-import logging
-import instaloader
-
-logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    level=logging.INFO,
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("logs/bot.log")
-    ]
+from instagrapi.exceptions import (
+    BadPassword,
+    ChallengeRequired,
+    FeedbackRequired,
+    LoginRequired,
+    PleaseWaitFewMinutes,
+    RecaptchaChallengeForm,
+    ReloginAttemptExceeded,
+    SelectContactPointRecoveryForm,
 )
-logger = logging.getLogger()
+from typing import Union
+import time
+import json
 
-def login_user(USERNAME, PASSWORD):
-    """
-    Attempts to login to Instagram using either the provided session information
-    or the provided username and password.
-    """
+def load_config(file_path: str) -> dict:
+    with open(file_path, 'r') as file:
+        return json.load(file)
+
+def update_client_settings(settings: dict) -> None:
+    # Implement the function to update the client settings.
+    pass
+
+def rebuild_client_settings() -> dict:
+    # Implement the function to rebuild the client settings.
+    pass
+
+def freeze(message: str, hours: int = 0, days: int = 0) -> None:
+    print(f"Freezing due to: {message}")
+    freeze_time = hours * 3600 + days * 86400
+    time.sleep(freeze_time)
+
+
+def get_client(username: str, password: str) -> Union[Client, None]:
+    def handle_exception(client: Client, e: Exception) -> Union[bool, None]:
+        nonlocal username, password
+        if isinstance(e, BadPassword):
+            client.logger.exception(e)
+            raise ReloginAttemptExceeded(e)
+
+        elif isinstance(e, LoginRequired):
+            client.logger.exception(e)
+            client.login(username, password)
+            return update_client_settings(client.get_settings())
+        elif isinstance(e, ChallengeRequired):
+            api_path = client.last_json.get("challenge", {}).get("api_path")
+            if api_path == "/challenge/":
+
+                client.settings = rebuild_client_settings()
+            else:
+                try:
+                    client.challenge_resolve(client.last_json)
+                except ChallengeRequired as e:
+                    freeze("Manual Challenge Required", days=2)
+                    raise e
+                except (
+                    ChallengeRequired,
+                    SelectContactPointRecoveryForm,
+                    RecaptchaChallengeForm,
+                ) as e:
+                    freeze(str(e), days=4)
+                    raise e
+                update_client_settings(client.get_settings())
+            return True
+        elif isinstance(e, FeedbackRequired):
+            message = client.last_json["feedback_message"]
+            if "This action was blocked. Please try again later" in message:
+                freeze(message, hours=12)
+            elif "We restrict certain activity to protect our community" in message:
+                freeze(message, hours=12)
+            elif "Your account has been temporarily blocked" in message:
+                freeze(message)
+        raise e
 
     cl = Client()
-    session = cl.load_settings("session.json")
-
-    login_via_session = False
-    login_via_pw = False
-
-    if session:
-        try:
-            cl.set_settings(session)
-            cl.login(USERNAME, PASSWORD)
-
-            # check if session is valid
-            try:
-                cl.get_timeline_feed()
-            except instaloader.LoginRequiredException:
-                logger.info("Session is invalid, need to login via username and password")
-
-                old_session = cl.get_settings()
-
-                # use the same device uuids across logins
-                cl.set_settings({})
-                cl.set_uuids(old_session["uuids"])
-
-                cl.login(USERNAME, PASSWORD)
-            logger.info("Logged in using session information.")
-            login_via_session = True
-        except Exception as e:
-            logger.info("Couldn't login user using session information: %s" % e)
-
-    if not login_via_session:
-        try:
-            logger.info("Attempting to login via username and password. username: %s" % USERNAME)
-            if cl.login(USERNAME, PASSWORD):
-                logger.info("Logged in using username and password.")
-                login_via_pw = True
-        except Exception as e:
-            logger.info("Couldn't login user using username and password: %s" % e)
-
-    if not login_via_pw and not login_via_session:
-        raise Exception("Couldn't login user with either password or session")
-
+    cl.handle_exception = handle_exception
+    cl.login(username, password)
     return cl

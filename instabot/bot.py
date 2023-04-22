@@ -20,13 +20,20 @@ def unfollow_users(cl, users_to_unfollow, config):
         cl.user_unfollow(user)
         logger.info(f"Unfollowed user {user.username}")
 
-def follow_users(cl, config, followers):
-    follow_interval = config['follow_interval']
-    followed_users = []
-    for i, user in enumerate(followers):
-        time.sleep(random.randint(follow_interval[0], follow_interval[1]))
-        logger.info(f"Followed user {user}")
-        cl.user_follow(user)
-        followed_users.append(user)
+def follow_users(cl, SOURCE_ACCOUNT, FOLLOWS_PER_DAY):
+    logger.info("Started following process..")
 
-    return followed_users
+    user_id = cl.user_id_from_username(SOURCE_ACCOUNT)
+
+    average_sleep_time = 86400 / FOLLOWS_PER_DAY
+    min_sleep_time = average_sleep_time * 0.5  # 50% less than the average
+    max_sleep_time = average_sleep_time * 1.5  # 50% more than the average
+
+    users = cl.user_followers(user_id, True, FOLLOWS_PER_DAY)
+
+    for user in users:
+        cl.user_follow(user)
+        logger.info(f"Followed user {user}")
+        sleep_time = random.uniform(min_sleep_time, max_sleep_time)
+        logger.info(f"Sleeping for {sleep_time} seconds before following {user}")
+        time.sleep(sleep_time)

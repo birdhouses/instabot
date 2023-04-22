@@ -1,29 +1,27 @@
 import instabot
-import json
 import time
+import logging
+from instagrapi import Client
 
-def main():
-    with open('config.json', 'r') as file:
-        config = json.load(file)
-
-    username = config['account']['username']
-    password = config['account']['password']
-    # Run once
-    cl = instabot.login_user(username, password)
-
-    while True:
-        source_accounts = config['source_accounts']
-
-        for account in source_accounts:
-            user_id = cl.user_id_from_username(account)
-            followers = cl.user_followers(user_id, True, config['daily_follow_limit']).keys()
-
-            users_to_unfollow = instabot.follow_users(cl, config, followers)
-
-            print(f"Sleep for {((config['unfollow_after'] / 60) / 60)} hours")
-            time.sleep(config['unfollow_after'])
-
-            instabot.unfollow_users(cl, users_to_unfollow, config)
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.INFO,
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("logs/bot.log")
+    ]
+)
+logger = logging.getLogger()
 
 if __name__ == "__main__":
-    main()
+    config = instabot.load_config('config.json')
+
+    ACCOUNT_USERNAME = config['account']['username']
+    ACCOUNT_PASSWORD = config['account']['password']
+    SOURCE_ACCOUNT = config['source_account']
+    FOLLOWS_PER_DAY = config['follows_per_day']
+
+    cl = instabot.get_client(ACCOUNT_USERNAME, ACCOUNT_PASSWORD)
+
+    while True:
+        instabot.follow_users(cl, SOURCE_ACCOUNT, FOLLOWS_PER_DAY)
