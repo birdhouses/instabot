@@ -26,7 +26,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-session_file_path = 'settings.json'
 
 def load_config(file_path: str) -> dict:
     with open(file_path, 'r') as file:
@@ -90,6 +89,10 @@ def next_proxy() -> str:
 
 
 def get_client(username: str, password: str) -> Union[Client, None]:
+    settings_folder = "settings"
+    os.makedirs(settings_folder, exist_ok=True)
+    session_file_path = os.path.join(settings_folder, f"settings_{username}.json")
+
     def handle_exception(client: Client, e: Exception) -> Union[bool, None]:
         nonlocal username, password
         if isinstance(e, BadPassword):
@@ -137,7 +140,7 @@ def get_client(username: str, password: str) -> Union[Client, None]:
 
     cl = Client()
 
-    if os.path.exists('settings.json'):
+    if os.path.exists(session_file_path):
         cl.load_settings(session_file_path)
         try:
             cl.get_timeline_feed()  # Check if the session is valid
