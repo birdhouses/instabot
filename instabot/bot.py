@@ -68,8 +68,8 @@ def unfollow_users(cl, unfollow_after):
         logger.info(f"Unfollowed user {user.username}")
         remove_unfollowed_user(user)
 
-def follow_users(cl, SOURCE_ACCOUNT, FOLLOWS_PER_DAY):
-    logger.info("Started following process..")
+def follow_user_followers(cl, SOURCE_ACCOUNT, FOLLOWS_PER_DAY):
+    logger.info("Started following user followers process..")
 
     user_id = cl.user_id_from_username(SOURCE_ACCOUNT)
 
