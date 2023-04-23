@@ -6,6 +6,8 @@ __pycache__/
 # User config files
 config.json
 session.json
+/settings
+/followed_users
 
 # C extensions
 *.so

@@ -2,6 +2,8 @@ import time
 import logging
 import random
 import datetime
+from instagrapi import Client
+import os
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -14,14 +16,21 @@ logging.basicConfig(
 
 logger = logging.getLogger()
 
-def save_followed_user(user_id):
-    with open("followed_users.txt", "a") as file:
+def save_followed_user(cl: Client, user_id):
+    followed_users_folder = "followed_users"
+    os.makedirs(followed_users_folder, exist_ok=True)
+    file_path = os.path.join(followed_users_folder, f"followed_users_{cl.user_id}.txt")
+
+    with open(file_path, "a") as file:
         file.write(f"{user_id},{datetime.datetime.now()}\n")
 
-def load_followed_users():
+def load_followed_users(cl: Client):
     followed_users = []
+    followed_users_folder = "followed_users"
+    os.makedirs(followed_users_folder, exist_ok=True)
+    file_path = os.path.join(followed_users_folder, f"followed_users_{cl.user_id}.txt")
 
-    with open("followed_users.txt", "r") as file:
+    with open(file_path, "r") as file:
         for line in file:
             user_id, timestamp = line.strip().split(",")
             followed_users.append((int(user_id), datetime.datetime.fromisoformat(timestamp)))
@@ -32,19 +41,22 @@ def filter_users_to_unfollow(followed_users, follow_time):
     now = datetime.datetime.now()
     return [user for user, timestamp in followed_users if (now - timestamp).total_seconds() >= follow_time]
 
-def remove_unfollowed_user(user):
+def remove_unfollowed_user(cl: Client, user):
     followed_users = load_followed_users()
     followed_users.remove(user)
 
-    with open("followed_users.txt", "w") as file:
+    followed_users_folder = "followed_users"
+    os.makedirs(followed_users_folder, exist_ok=True)
+    file_path = os.path.join(followed_users_folder, f"followed_users_{cl.user_id}.txt")
+
+    with open(file_path, "w") as file:
         for user in followed_users:
             file.write(f"{user}\n")
 
 
-def unfollow_users(cl, config):
+def unfollow_users(cl, unfollow_after):
     logger.info("Started unfollowing process")
-    unfollow_after = config['unfollow_after']
-    followed_users = load_followed_users()
+    followed_users = load_followed_users(cl)
     users_to_unfollow = filter_users_to_unfollow(followed_users, unfollow_after)
     unfollow_users_count = len(users_to_unfollow)
     logger.info(f"Going to unfollow {unfollow_users_count} users")
@@ -71,6 +83,6 @@ def follow_users(cl, SOURCE_ACCOUNT, FOLLOWS_PER_DAY):
         logger.info(f"Following user: {user}")
         cl.user_follow(user)
         sleep_time = random.uniform(min_sleep_time, max_sleep_time)
-        save_followed_user(user)
+        save_followed_user(cl, user)
         logger.info(f"Sleeping for {sleep_time} seconds before following next user..")
         time.sleep(sleep_time)
