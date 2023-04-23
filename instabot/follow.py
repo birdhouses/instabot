@@ -36,6 +36,10 @@ def load_followed_users(cl: Client) -> List[Tuple[int, datetime.datetime]]:
     os.makedirs(followed_users_folder, exist_ok=True)
     file_path = os.path.join(followed_users_folder, f"followed_users_{cl.user_id}.txt")
 
+    if not os.path.exists(file_path):
+        with open(file_path, "w") as file:
+            pass
+
     with open(file_path, "r") as file:
         for line in file:
             user_id, timestamp = line.strip().split(",")
