@@ -153,7 +153,9 @@ def get_client(username: str, password: str) -> Union[Client, None]:
             logger.exception(e)
             client.set_proxy(next_proxy())
             client.settings = rebuild_client_settings(client)
-            freeze("Rate limit reached try again in 3 hours", hours=3)
+            sleep_time = 3600 * 3
+            logger.info(f"Rate limit reached sleeping for {sleep_time}")
+            time.sleep(sleep_time)
             return True
         raise e
 
