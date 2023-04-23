@@ -15,6 +15,7 @@ import json
 import uuid
 import os
 import logging
+import random
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -85,7 +86,13 @@ def freeze(message: str, hours: int = 0, days: int = 0) -> None:
     time.sleep(freeze_time)
 
 def next_proxy() -> str:
-    return "http://riccmpgq:nu5x1biz04h9@45.94.47.66:8110"
+    proxies = [
+        "http://riccmpgq:nu5x1biz04h9@45.94.47.66:8110",
+        "http://riccmpgq:nu5x1biz04h9@45.155.68.129:8133",
+        "http://riccmpgq:nu5x1biz04h9@154.95.36.199:6893",
+    ]
+
+    return random.choice(proxies)
 
 
 def get_client(username: str, password: str) -> Union[Client, None]:
@@ -136,6 +143,8 @@ def get_client(username: str, password: str) -> Union[Client, None]:
                 freeze(message, hours=12)
             elif "Your account has been temporarily blocked" in message:
                 freeze(message)
+        elif isinstance(e, PleaseWaitFewMinutes):
+            freeze(str(e), hours=1)
         raise e
 
     cl = Client()
@@ -147,7 +156,7 @@ def get_client(username: str, password: str) -> Union[Client, None]:
             logger.info("Session is valid, login with session")
 
         except Exception as e:
-            logger(f"Session is invalid: {e}")
+            logger.info(f"Session is invalid: {e}")
             os.remove(session_file_path)
             cl.login(username, password)
             cl.dump_settings(session_file_path)

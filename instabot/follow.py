@@ -3,8 +3,10 @@ import logging
 import random
 import datetime
 from instagrapi import Client
-from typing import List, Tuple
+from typing import Any, List, Tuple, Dict
 import os
+from .like_media import like_recent_posts
+import threading
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -68,7 +70,7 @@ def unfollow_users(cl: Client, unfollow_after: int) -> None:
         logger.info(f"Unfollowed user {user.username}")
         remove_unfollowed_user(cl, user=user)
 
-def follow_user_followers(cl: Client, source_account: str, follows_per_day: int) -> None:
+def follow_user_followers(cl: Client, source_account: str, follows_per_day: int, engagement: Dict[str, Any]) -> None:
     logger.info("Started following user followers process..")
 
     user_id = cl.user_id_from_username(source_account)
@@ -80,10 +82,19 @@ def follow_user_followers(cl: Client, source_account: str, follows_per_day: int)
     users = cl.user_followers(user_id, True, amount=follows_per_day)
 
     for user in users:
-        logger.info(f"Following user: {user}")
-        cl.user_follow(user)
-        sleep_time = random.uniform(min_sleep_time, max_sleep_time)
-        save_followed_user(cl, user_id=user)
-        logger.info(f"Sleeping for {sleep_time} seconds before following next user..")
-        time.sleep(sleep_time)
+        try:
+            logger.info(f"Following user: {user}")
+            cl.user_follow(user)
+            sleep_time = random.uniform(min_sleep_time, max_sleep_time)
+            save_followed_user(cl, user_id=user)
+
+            if engagement["like_recent_posts"]:
+                like_recent_posts(cl, user_id=user, engagement=engagement)
+
+            logger.info(f"Sleeping for {sleep_time} seconds before following next user..")
+            time.sleep(sleep_time)
+
+        except Exception as e:
+            logger.error(f"Error while processing user {user}: {e}")
+            continue
 
