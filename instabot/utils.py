@@ -9,6 +9,7 @@ from instagrapi.exceptions import (
     ReloginAttemptExceeded,
     SelectContactPointRecoveryForm,
 )
+from requests.exceptions import RetryError
 from typing import Union
 import time
 import json
@@ -16,6 +17,7 @@ import uuid
 import os
 import logging
 import random
+import requests
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -86,11 +88,13 @@ def freeze(message: str, hours: int = 0, days: int = 0) -> None:
     time.sleep(freeze_time)
 
 def next_proxy() -> str:
-    proxies = [
-        "http://riccmpgq:nu5x1biz04h9@45.94.47.66:8110",
-        "http://riccmpgq:nu5x1biz04h9@45.155.68.129:8133",
-        "http://riccmpgq:nu5x1biz04h9@154.95.36.199:6893",
-    ]
+    config = load_config('config.json')
+    url = config['proxy_url']
+    response = requests.get(url)
+    response.raise_for_status()
+
+    raw_proxies = response.text.strip().split('\n')
+    proxies = [f"http://{proxy.split(':')[2]}:{proxy.split(':')[3]}@{proxy.split(':')[0]}:{proxy.split(':')[1]}" for proxy in raw_proxies]
 
     return random.choice(proxies)
 
@@ -119,7 +123,7 @@ def get_client(username: str, password: str) -> Union[Client, None]:
             api_path = client.last_json.get("challenge", {}).get("api_path")
             if api_path == "/challenge/":
                 client.set_proxy(next_proxy().href)
-                client.settings = rebuild_client_settings()
+                client.settings = rebuild_client_settings(client)
             else:
                 try:
                     client.challenge_resolve(client.last_json)
@@ -145,6 +149,12 @@ def get_client(username: str, password: str) -> Union[Client, None]:
                 freeze(message)
         elif isinstance(e, PleaseWaitFewMinutes):
             freeze(str(e), hours=1)
+        elif isinstance(e, RetryError):
+            logger.exception(e)
+            client.set_proxy(next_proxy())
+            client.settings = rebuild_client_settings(client)
+            freeze("Rate limit reached try again in 3 hours", hours=3)
+            return True
         raise e
 
     cl = Client()
