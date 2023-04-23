@@ -12,8 +12,21 @@ from instagrapi.exceptions import (
 from typing import Union
 import time
 import json
-import random
 import uuid
+import os
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.INFO,
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("logs/bot.log")
+    ]
+)
+logger = logging.getLogger()
+
+session_file_path = 'settings.json'
 
 def load_config(file_path: str) -> dict:
     with open(file_path, 'r') as file:
@@ -80,7 +93,7 @@ def get_client(username: str, password: str) -> Union[Client, None]:
     def handle_exception(client: Client, e: Exception) -> Union[bool, None]:
         nonlocal username, password
         if isinstance(e, BadPassword):
-            client.logger.exception(e)
+            logger.exception(e)
             client.set_proxy(next_proxy().href)
             if client.relogin_attempt > 0:
                 freeze(str(e), days=7)
@@ -89,7 +102,7 @@ def get_client(username: str, password: str) -> Union[Client, None]:
             return update_client_settings(client, client.get_settings())
 
         elif isinstance(e, LoginRequired):
-            client.logger.exception(e)
+            logger.exception(e)
             client.login(username, password)
             return update_client_settings(client, client.get_settings())
         elif isinstance(e, ChallengeRequired):
@@ -123,7 +136,25 @@ def get_client(username: str, password: str) -> Union[Client, None]:
         raise e
 
     cl = Client()
+
+    if os.path.exists('settings.json'):
+        cl.load_settings(session_file_path)
+        try:
+            cl.get_timeline_feed()  # Check if the session is valid
+            logger.info("Session is valid, login with session")
+
+        except Exception as e:
+            logger(f"Session is invalid: {e}")
+            os.remove(session_file_path)
+            cl.login(username, password)
+            cl.dump_settings(session_file_path)
+            logger.info("Session saved to file")
+    else:
+        cl.login(username, password)
+        cl.dump_settings(session_file_path)
+        logger.info("Session saved to file")
+
     cl.handle_exception = handle_exception
-    cl.login(username, password)
     cl.set_proxy(next_proxy())
+
     return cl
