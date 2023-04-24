@@ -38,16 +38,29 @@ def freeze(message: str, hours: int = 0, days: int = 0) -> None:
     freeze_time = hours * 3600 + days * 86400
     time.sleep(freeze_time)
 
+def read_proxies():
+    try:
+        with open('proxies.txt', 'r') as f:
+            raw_proxies = [line.strip() for line in f.readlines()]
+            return raw_proxies
+    except FileNotFoundError:
+        print("Warning: proxies.txt not found, returning an empty list.")
+        return []
+
 def next_proxy() -> str:
-    config = load_config('config.json')
-    url = config['proxy_url']
-    response = requests.get(url)
-    response.raise_for_status()
+    raw_proxies = read_proxies()
 
-    raw_proxies = response.text.strip().split('\n')
-    proxies = [f"http://{proxy.split(':')[2]}:{proxy.split(':')[3]}@{proxy.split(':')[0]}:{proxy.split(':')[1]}" for proxy in raw_proxies]
+    if not raw_proxies:
+        print("No proxies available, returning an empty string.")
+        return ""
 
-    return random.choice(proxies)
+    raw_proxy = random.choice(raw_proxies)
+
+    ip, port, username, password = raw_proxy.split(':')
+    formatted_proxy = f"http://{username}:{password}@{ip}:{port}"
+
+    return formatted_proxy
+
 
 def load_or_login_and_save_session(client, username, password, session_file_path):
     if os.path.exists(session_file_path):
@@ -85,25 +98,30 @@ def get_client(username: str, password: str) -> Union[Client, None]:
         if isinstance(e, BadPassword):
             raise e
         elif isinstance(e, LoginRequired):
-            freeze(e, 1)
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
         elif isinstance(e, ChallengeRequired):
             raise e
         elif isinstance(e, FeedbackRequired):
+            client.set_proxy(next_proxy())
             freeze(e, hours=1)
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
         elif isinstance(e, PleaseWaitFewMinutes):
+            client.set_proxy(next_proxy())
             freeze(e, 1)
             return True
         elif isinstance(e, RetryError):
+            client.set_proxy(next_proxy())
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
-            freeze(e, hours=1)
             return True
         raise e
 
     client = Client()
+    proxy = next_proxy()
+    logger.info(proxy)
+    client.set_proxy(next_proxy())
+
     client.handle_exception = handle_exception
     load_or_login_and_save_session(client, username, password, session_file_path)
 
