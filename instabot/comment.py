@@ -30,6 +30,18 @@ def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
         sleep_time = calculate_sleep_time(amount_per_day)
         logger.info(f"Sleeping for {sleep_time} before commenting")
         time.sleep(sleep_time)
-        cl.media_comment(post.id, comment)
+
+        comment = cl.media_comment(post.id, comment)
+
+        save_comment(comment.pk, account['username'])
 
         logger.info(f"Commented on post {post.id}")
+
+def save_comment(comment_pk: int, username: str):
+    comment_folder = "comments"
+    os.makedirs(comment_folder, exist_ok=True)
+    comment_file_path = os.path.join(comment_folder, f"comments_{username}.json")
+
+    with open(comment_file_path, "a") as file:
+        file.write(f"{comment_pk},{datetime.datetime.now()}\n")
+        logger.info(f"Saved comment_pk to file for {username}")
