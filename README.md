@@ -27,6 +27,19 @@ Install the required Python packages:
     pip install -r requirements.txt
 
 Create a config.json file with your Instagram account credentials and desired settings (refer to the config.example.json file for an example configuration):
+   
+    "accounts": A list of Instagram accounts the bot will manage.
+        "username": The username of the Instagram account.
+        "password": The password of the Instagram account.
+
+    "follow_users": Settings for the bot's follow/unfollow actions.
+        "enabled": Set to true to enable follow/unfollow actions, or false to disable.
+        "follows_per_day": The number of users the bot will follow per day.
+        "unfollow_after": The time (in seconds) the bot will wait before unfollowing a user.
+        "source_account": The Instagram account the bot will use as a source for finding users to follow.
+        "engagement": Settings for engaging with the users the bot follows.
+            "like_recent_posts": Set to true for the bot to like recent posts of the followed users, or false to disable this feature.
+            "like_count": The number of recent posts the bot will like for each followed user.
 
 ### Usage
 
