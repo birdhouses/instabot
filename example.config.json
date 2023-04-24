@@ -12,6 +12,10 @@
             "like_recent_posts": true,
             "like_count": 3
           }
+        },
+        "unfollow_users": {
+          "enabled": true,
+          "unfollow_after": 84600
         }
       }
     ]
