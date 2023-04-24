@@ -105,9 +105,13 @@ def follow_user(cl: Client, user_id: int, engagement: Dict[str, Any]) -> bool:
     return False
 
 
-def follow_user_followers(cl: Client, source_account: str, follows_per_day: int, engagement: Dict[str, Any]) -> None:
+def follow_user_followers(cl: Client, account: Dict[str, Any]) -> None:
     """Follow the followers of the source account and engage with their content."""
     logger.info("Started following user followers process..")
+
+    source_account = account['follow_users']['source_account']
+    follows_per_day = account['follow_users']['follows_per_day']
+    engagement = account['follow_users']['engagement']
 
     user_id = cl.user_id_from_username(source_account)
     average_sleep_time = 86400 / follows_per_day

@@ -10,10 +10,9 @@ from instagrapi.exceptions import (
     SelectContactPointRecoveryForm,
 )
 from requests.exceptions import RetryError
-from typing import Union
+from typing import Union, List
 import time
 import json
-import uuid
 import os
 import logging
 import random
@@ -92,6 +91,7 @@ def get_client(username: str, password: str) -> Union[Client, None]:
         elif isinstance(e, ChallengeRequired):
             raise e
         elif isinstance(e, FeedbackRequired):
+            freeze(e, hours=1)
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
         elif isinstance(e, PleaseWaitFewMinutes):
@@ -108,3 +108,12 @@ def get_client(username: str, password: str) -> Union[Client, None]:
     load_or_login_and_save_session(client, username, password, session_file_path)
 
     return client
+
+def get_user_id(cl: Client, source_account: str) -> int:
+    return cl.user_id_from_username(source_account)
+
+def get_followers(cl: Client, user_id: int, amount: int) -> List[str]:
+    return cl.user_followers(user_id, True, amount=amount)
+
+def calculate_sleep_time(min_sleep_time: float, max_sleep_time: float) -> float:
+    return random.uniform(min_sleep_time, max_sleep_time)

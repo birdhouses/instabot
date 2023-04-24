@@ -4,22 +4,12 @@ import threading
 def run_bot(account):
     username = account['username']
     password = account['password']
-    source_account = account['source_account']
-    follows_per_day = account['follows_per_day']
-    unfollow_after = account['unfollow_after']
-    engagement = account['engagement']
 
     cl = instabot.get_client(username, password)
 
     while True:
-        follow_user_followers_thread = threading.Thread(target=instabot.follow_user_followers, args=(cl, source_account, follows_per_day, engagement))
-        unfollow_thread = threading.Thread(target=instabot.unfollow_users, args=(cl, unfollow_after))
-
-        follow_user_followers_thread.start()
-        unfollow_thread.start()
-
-        follow_user_followers_thread.join()
-        unfollow_thread.join()
+        if account['follow_users']['enabled']:
+            instabot.follow_user_followers(cl, account)
 
 if __name__ == "__main__":
     config = instabot.load_config('config.json')

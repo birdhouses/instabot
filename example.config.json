@@ -1,18 +1,18 @@
 {
     "accounts": [
       {
-        "username": "account1_username",
-        "password": "account1_password",
-        "source_account": "source_account_username",
-        "follows_per_day": 50,
-        "unfollow_after": 84600
-      },
-      {
-        "username": "account2_username",
-        "password": "account2_password",
-        "source_account": "source_account_username",
-        "follows_per_day": 50,
-        "unfollow_after": 84600
+        "username": "username",
+        "password": "password",
+        "follow_users": {
+          "enabled": true,
+          "follows_per_day": 100,
+          "unfollow_after": 84600,
+          "source_account": "instagram",
+          "engagement": {
+            "like_recent_posts": true,
+            "like_count": 3
+          }
+        }
       }
     ]
   }
