@@ -8,6 +8,7 @@ config.json
 session.json
 /settings
 /followed_users
+/comments
 
 # C extensions
 *.so
