@@ -17,7 +17,10 @@ def run_bot(account):
         unfollow_thread = threading.Thread(target=instabot.unfollow_users, args=(cl, unfollow_after))
         worker_threads.append(unfollow_thread)
         unfollow_thread.start()
-
+    if account['comment_on_media']['enabled']:
+        comment_thread = threading.Thread(target=instabot.comment_on_media, args=(cl, account))
+        worker_threads.append(comment_thread)
+        comment_thread.start()
 
     # Wait for all worker threads to finish
     for worker_thread in worker_threads:

@@ -73,7 +73,7 @@ def unfollow_users(cl: Client, unfollow_after: int) -> None:
     unfollow_users_count = len(users_to_unfollow)
     logger.info(f"Going to unfollow {unfollow_users_count} users")
     for user in users_to_unfollow:
-        sleep_time = calculate_sleep_time(1800, 3600)
+        sleep_time = calculate_sleep_time(unfollow_users_count)
         logger.info(f"Sleeping for {sleep_time} before unfollowing {user}")
         time.sleep(sleep_time)
         cl.user_unfollow(user)
