@@ -6,10 +6,25 @@ def run_bot(account):
     password = account['password']
 
     cl = instabot.get_client(username, password)
+    worker_threads = []
 
-    while True:
-        if account['follow_users']['enabled']:
-            instabot.follow_user_followers(cl, account)
+    if account['follow_users']['enabled']:
+        follow_thread = threading.Thread(target=instabot.follow_user_followers, args=(cl, account))
+        worker_threads.append(follow_thread)
+        follow_thread.start()
+    if account['unfollow_users']['enabled']:
+        unfollow_after = account['unfollow_users']['unfollow_after']
+        unfollow_thread = threading.Thread(target=instabot.unfollow_users, args=(cl, unfollow_after))
+        worker_threads.append(unfollow_thread)
+        unfollow_thread.start()
+    if account['comment_on_media']['enabled']:
+        comment_thread = threading.Thread(target=instabot.comment_on_media, args=(cl, account))
+        worker_threads.append(comment_thread)
+        comment_thread.start()
+
+    # Wait for all worker threads to finish
+    for worker_thread in worker_threads:
+        worker_thread.join()
 
 if __name__ == "__main__":
     config = instabot.load_config('config.json')

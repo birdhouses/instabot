@@ -9,6 +9,7 @@ from instagrapi.exceptions import (
     ReloginAttemptExceeded,
     SelectContactPointRecoveryForm,
 )
+from instagrapi.types import Media
 from requests.exceptions import RetryError
 from typing import Union, List
 import time
@@ -133,5 +134,8 @@ def get_user_id(cl: Client, source_account: str) -> int:
 def get_followers(cl: Client, user_id: int, amount: int) -> List[str]:
     return cl.user_followers(user_id, True, amount=amount)
 
-def calculate_sleep_time(min_sleep_time: float, max_sleep_time: float) -> float:
+def calculate_sleep_time(actions_per_day: int) -> float:
+    average_sleep_time = 86400 / actions_per_day
+    min_sleep_time = average_sleep_time * 0.5
+    max_sleep_time = average_sleep_time * 1.5
     return random.uniform(min_sleep_time, max_sleep_time)

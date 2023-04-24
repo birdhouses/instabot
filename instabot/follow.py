@@ -7,7 +7,7 @@ from typing import Any, List, Tuple, Dict
 import os
 from .like_media import like_recent_posts
 import threading
-from .utils import load_config
+from .utils import load_config, calculate_sleep_time
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -73,7 +73,7 @@ def unfollow_users(cl: Client, unfollow_after: int) -> None:
     unfollow_users_count = len(users_to_unfollow)
     logger.info(f"Going to unfollow {unfollow_users_count} users")
     for user in users_to_unfollow:
-        sleep_time = random.uniform(300, 900)
+        sleep_time = calculate_sleep_time(unfollow_users_count)
         logger.info(f"Sleeping for {sleep_time} before unfollowing {user}")
         time.sleep(sleep_time)
         cl.user_unfollow(user)

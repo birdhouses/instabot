@@ -12,6 +12,18 @@
             "like_recent_posts": true,
             "like_count": 3
           }
+        },
+        "unfollow_users": {
+          "enabled": true,
+          "unfollow_after": 84600
+        },
+        "comment_on_media": {
+          "enabled": true,
+          "comment_on_tag": "hashtag",
+          "amount_per_day": 5,
+          "comments": [
+            "Comment 1.."
+          ]
         }
       }
     ]
