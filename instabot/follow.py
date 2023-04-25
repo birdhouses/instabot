@@ -78,7 +78,6 @@ def mark_unfollowed_user(cl: Client, user_id: int) -> None:
         for user_info in followed_users:
             file.write(",".join(str(x) for x in user_info) + "\n")
 
-
 def unfollow_users(cl: Client, unfollow_after: int) -> None:
     """Unfollow users after a specified time."""
     logger.info("Started unfollowing process")
