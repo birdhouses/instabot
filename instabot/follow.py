@@ -50,7 +50,7 @@ def load_followed_users(cl: Client) -> List[Tuple[int, datetime.datetime]]:
 def filter_users_to_unfollow(followed_users: List[Tuple[int, datetime.datetime]], follow_time: int) -> List[int]:
     """Filter users that should be unfollowed based on follow_time."""
     now = datetime.datetime.now()
-    return [user for user, timestamp in followed_users if (now - timestamp).total_seconds() >= follow_time]
+    return [user for user, timestamp, *unfollow_timestamp in followed_users if (now - timestamp).total_seconds() >= follow_time and not unfollow_timestamp]
 
 def remove_unfollowed_user(cl: Client, user: int) -> None:
     """Remove unfollowed user from the followed users file."""
@@ -65,6 +65,19 @@ def remove_unfollowed_user(cl: Client, user: int) -> None:
         for user in followed_users:
             file.write(f"{user}\n")
 
+def mark_unfollowed_user(cl: Client, user_id: int) -> None:
+    """Mark the unfollowed user with a timestamp in the followed users file."""
+    followed_users = load_followed_users(cl)
+    followed_users = [(user, timestamp) if user != user_id else (user, timestamp, datetime.datetime.now()) for user, timestamp in followed_users]
+
+    followed_users_folder = "followed_users"
+    os.makedirs(followed_users_folder, exist_ok=True)
+    file_path = os.path.join(followed_users_folder, f"followed_users_{cl.user_id}.txt")
+
+    with open(file_path, "w") as file:
+        for user_info in followed_users:
+            file.write(",".join(str(x) for x in user_info) + "\n")
+
 def unfollow_users(cl: Client, unfollow_after: int) -> None:
     """Unfollow users after a specified time."""
     logger.info("Started unfollowing process")
@@ -76,8 +89,14 @@ def unfollow_users(cl: Client, unfollow_after: int) -> None:
         sleep_time = calculate_sleep_time(unfollow_users_count)
         logger.info(f"Sleeping for {sleep_time} before unfollowing {user}")
         time.sleep(sleep_time)
-        cl.user_unfollow(user)
-        logger.info(f"Unfollowed user {user}")
+        try:
+            cl.user_unfollow(user)
+        except Exception as e:
+            logger.exception('Error while trying to unfollow user')
+            continue
+
+        logger.info(f"Tried to unfollow user {user}")
+        mark_unfollowed_user(cl, user)
 
 def user_not_followed_before(cl: Client, user_id: int) -> bool:
     """Check if the given user_id has been followed before."""
