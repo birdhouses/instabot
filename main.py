@@ -1,44 +1,32 @@
 import instabot
-import threading
+import asyncio
+from instabot import follow_user_followers, unfollow_users, comment_on_media
 
-def run_bot(account):
-    username = account['username']
-    password = account['password']
+async def main(accounts):
+    for account in accounts:
+        username = account['username']
+        password = account['password']
 
-    cl = instabot.get_client(username, password)
-    worker_threads = []
+        cl = instabot.get_client(username, password)
 
-    if account['follow_users']['enabled']:
-        follow_thread = threading.Thread(target=instabot.follow_user_followers, args=(cl, account))
-        worker_threads.append(follow_thread)
-        follow_thread.start()
-    if account['unfollow_users']['enabled']:
-        unfollow_after = account['unfollow_users']['unfollow_after']
-        unfollow_thread = threading.Thread(target=instabot.unfollow_users, args=(cl, unfollow_after))
-        worker_threads.append(unfollow_thread)
-        unfollow_thread.start()
-    if account['comment_on_media']['enabled']:
-        comment_thread = threading.Thread(target=instabot.comment_on_media, args=(cl, account))
-        worker_threads.append(comment_thread)
-        comment_thread.start()
-
-    # Wait for all worker threads to finish
-    for worker_thread in worker_threads:
-        worker_thread.join()
-
+        async with asyncio.TaskGroup() as tg:
+            if account['follow_users']['enabled']:
+                follow_task = tg.create_task(
+                    follow_user_followers(cl, account)
+                )
+            # if account['unfollow_users']['enabled']:
+            #     unfollow_task = tg.create_task(
+            #         unfollow_users(cl, account['unfollow_users']['unfollow_after'])
+            #     )
+            # if account['comment_on_media']['enabled']:
+            #     comment_task = tg.create_task(
+            #         comment_on_media(cl, account)
+            #     )
+        ### Implement infinte cycle?
+        print("All tasks have finished...")
 if __name__ == "__main__":
     config = instabot.load_config('config.json')
 
     # Get the accounts from the configuration file
     accounts = config['accounts']
-
-    # Create a thread for each account and run the bot
-    account_threads = []
-    for account in accounts:
-        account_thread = threading.Thread(target=run_bot, args=([account]))
-        account_threads.append(account_thread)
-        account_thread.start()
-
-    # Wait for all account threads to finish
-    for account_thread in account_threads:
-        account_thread.join()
+    asyncio.run(main(accounts))

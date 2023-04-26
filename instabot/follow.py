@@ -6,8 +6,8 @@ from instagrapi import Client
 from typing import Any, List, Tuple, Dict
 import os
 from .like_media import like_recent_posts
-import threading
 from .utils import load_config, calculate_sleep_time
+import asyncio
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -88,7 +88,7 @@ def unfollow_users(cl: Client, unfollow_after: int) -> None:
     for user in users_to_unfollow:
         sleep_time = calculate_sleep_time(unfollow_users_count)
         logger.info(f"Sleeping for {sleep_time} before unfollowing {user}")
-        time.sleep(sleep_time)
+        asyncio.sleep(sleep_time)
         try:
             cl.user_unfollow(user)
         except Exception as e:
@@ -106,7 +106,7 @@ def user_not_followed_before(cl: Client, user_id: int) -> bool:
             return False
     return True
 
-def follow_user(cl: Client, user_id: int, engagement: Dict[str, Any]) -> bool:
+async def follow_user(cl: Client, user_id: int, engagement: Dict[str, Any]) -> bool:
     """Follow a user and add it to followed_users file."""
 
     if user_not_followed_before(cl, user_id):
@@ -114,7 +114,7 @@ def follow_user(cl: Client, user_id: int, engagement: Dict[str, Any]) -> bool:
         save_followed_user(cl, user_id=user_id)
 
         if engagement["like_recent_posts"]:
-            like_recent_posts(cl, user_id=user_id, engagement=engagement)
+            await like_recent_posts(cl, user_id=user_id, engagement=engagement)
 
         logger.info(f"Followed user: {user_id}")
 
@@ -124,7 +124,7 @@ def follow_user(cl: Client, user_id: int, engagement: Dict[str, Any]) -> bool:
     return False
 
 
-def follow_user_followers(cl: Client, account: Dict[str, Any]) -> None:
+async def follow_user_followers(cl: Client, account: Dict[str, Any]) -> None:
     """Follow the followers of the source account and engage with their content."""
     logger.info("Started following user followers process..")
 
@@ -139,13 +139,18 @@ def follow_user_followers(cl: Client, account: Dict[str, Any]) -> None:
 
     users = cl.user_followers(user_id, True, amount=follows_per_day)
 
-    for user in users:
+    async def process_user(user):
         try:
-            sleep_time = random.uniform(min_sleep_time, max_sleep_time)
-            if follow_user(cl, user, engagement):
+            if await follow_user(cl, user, engagement):
+                sleep_time = random.uniform(min_sleep_time, max_sleep_time)
                 logger.info(f"Sleeping for {sleep_time} seconds before following next user..")
-                time.sleep(sleep_time)
-
+                await asyncio.sleep(sleep_time)
         except Exception as e:
             logger.error(f"Error while processing user {user}: {e}")
-            continue
+
+    async def sequential_follow():
+        for user in users:
+            await process_user(user)
+
+    follow_task = asyncio.create_task(sequential_follow())
+    await follow_task

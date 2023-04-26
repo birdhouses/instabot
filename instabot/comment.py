@@ -6,6 +6,7 @@ import os
 import datetime
 import random
 from instabot import calculate_sleep_time
+import asyncio
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -29,7 +30,7 @@ def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
 
         sleep_time = calculate_sleep_time(amount_per_day)
         logger.info(f"Sleeping for {sleep_time} before commenting")
-        time.sleep(sleep_time)
+        asyncio.sleep(sleep_time)
 
         comment = cl.media_comment(post.id, comment)
 
