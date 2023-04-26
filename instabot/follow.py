@@ -8,6 +8,7 @@ import os
 from .like_media import like_recent_posts
 from .utils import load_config, calculate_sleep_time
 import asyncio
+import instabot
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -47,11 +48,12 @@ def load_followed_users(cl: Client) -> List[Tuple[int, datetime.datetime]]:
 
     return followed_users
 
-def filter_users_to_unfollow(followed_users: List[Tuple[int, datetime.datetime]], follow_time: int) -> List[int]:
+def filter_users_to_unfollow(followed_users: List[Tuple[int, datetime.datetime]], follow_time: str) -> List[int]:
     """Filter users that should be unfollowed based on follow_time."""
     now = datetime.datetime.now()
-    follow_time = follow_time * 86400
-    return [user for user, timestamp, *unfollow_timestamp in followed_users if (now - timestamp).total_seconds() >= follow_time and not unfollow_timestamp]
+    follow_time_seconds = instabot.parse_time_string(follow_time)
+    return [user for user, timestamp, *unfollow_timestamp in followed_users if (now - timestamp).total_seconds() >= follow_time_seconds and not unfollow_timestamp]
+
 
 def remove_unfollowed_user(cl: Client, user: int) -> None:
     """Remove unfollowed user from the followed users file."""
@@ -79,9 +81,10 @@ def mark_unfollowed_user(cl: Client, user_id: int) -> None:
         for user_info in followed_users:
             file.write(",".join(str(x) for x in user_info) + "\n")
 
-async def unfollow_users(cl: Client, unfollow_after: int) -> None:
+async def unfollow_users(cl: Client, account: Dict[str, Any]) -> None:
     """Unfollow users after a specified time."""
     logger.info("Started unfollowing process")
+    unfollow_after = account["unfollow_users"]["unfollow_after"]
     followed_users = load_followed_users(cl)
     users_to_unfollow = filter_users_to_unfollow(followed_users, follow_time=unfollow_after)
     unfollow_users_count = len(users_to_unfollow)

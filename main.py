@@ -19,7 +19,7 @@ async def main(account):
         if account['unfollow_users']['enabled']:
             cl = instabot.get_client(username, password)
             unfollow_task = tg.create_task(
-                unfollow_users(cl, account['unfollow_users']['unfollow_after_days'])
+                unfollow_users(cl, account)
             )
         if account['comment_on_media']['enabled']:
             cl = instabot.get_client(username, password)

@@ -18,7 +18,7 @@ import os
 import os.path
 import logging
 import random
-import requests
+from dateutil import parser
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -147,3 +147,10 @@ def calculate_sleep_time(actions_per_day: int) -> float:
     min_sleep_time = average_sleep_time * 0.5
     max_sleep_time = average_sleep_time * 1.5
     return random.uniform(min_sleep_time, max_sleep_time)
+
+def parse_time_string(time_string: str) -> int:
+    """Parse the time string in the format 'day-hour-min-s' into total seconds."""
+    parts = time_string.split('-')
+    days, hours, minutes, seconds = [int(part) for part in parts]
+    total_seconds = days * 86400 + hours * 3600 + minutes * 60 + seconds
+    return total_seconds
