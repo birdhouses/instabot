@@ -19,7 +19,7 @@ logging.basicConfig(
 
 logger = logging.getLogger()
 
-def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
+async def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
     comment_on_tag = account['comment_on_media']['comment_on_tag']
     amount_per_day = account['comment_on_media']['amount_per_day']
 
@@ -30,7 +30,7 @@ def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
 
         sleep_time = calculate_sleep_time(amount_per_day)
         logger.info(f"Sleeping for {sleep_time} before commenting")
-        asyncio.sleep(sleep_time)
+        # await asyncio.sleep(sleep_time)
 
         comment = cl.media_comment(post.id, comment)
 

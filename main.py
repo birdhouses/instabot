@@ -18,11 +18,11 @@ async def main(accounts):
                 unfollow_task = tg.create_task(
                     unfollow_users(cl, account['unfollow_users']['unfollow_after_days'])
                 )
-            # if account['comment_on_media']['enabled']:
-            #     comment_task = tg.create_task(
-            #         comment_on_media(cl, account)
-            #     )
-        ### Implement infinte cycle?
+            if account['comment_on_media']['enabled']:
+                comment_task = tg.create_task(
+                    comment_on_media(cl, account)
+                )
+
         print("All tasks have finished...")
 if __name__ == "__main__":
     config = instabot.load_config('config.json')
