@@ -14,10 +14,10 @@ async def main(accounts):
                 follow_task = tg.create_task(
                     follow_user_followers(cl, account)
                 )
-            # if account['unfollow_users']['enabled']:
-            #     unfollow_task = tg.create_task(
-            #         unfollow_users(cl, account['unfollow_users']['unfollow_after'])
-            #     )
+            if account['unfollow_users']['enabled']:
+                unfollow_task = tg.create_task(
+                    unfollow_users(cl, account['unfollow_users']['unfollow_after_days'])
+                )
             # if account['comment_on_media']['enabled']:
             #     comment_task = tg.create_task(
             #         comment_on_media(cl, account)

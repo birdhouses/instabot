@@ -6,7 +6,6 @@
         "follow_users": {
           "enabled": true,
           "follows_per_day": 100,
-          "unfollow_after": 84600,
           "source_account": "instagram",
           "engagement": {
             "like_recent_posts": true,
@@ -15,7 +14,7 @@
         },
         "unfollow_users": {
           "enabled": true,
-          "unfollow_after": 84600
+          "unfollow_after_days": 1
         },
         "comment_on_media": {
           "enabled": true,

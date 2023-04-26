@@ -50,6 +50,7 @@ def load_followed_users(cl: Client) -> List[Tuple[int, datetime.datetime]]:
 def filter_users_to_unfollow(followed_users: List[Tuple[int, datetime.datetime]], follow_time: int) -> List[int]:
     """Filter users that should be unfollowed based on follow_time."""
     now = datetime.datetime.now()
+    follow_time = follow_time * 86400
     return [user for user, timestamp, *unfollow_timestamp in followed_users if (now - timestamp).total_seconds() >= follow_time and not unfollow_timestamp]
 
 def remove_unfollowed_user(cl: Client, user: int) -> None:
@@ -78,7 +79,7 @@ def mark_unfollowed_user(cl: Client, user_id: int) -> None:
         for user_info in followed_users:
             file.write(",".join(str(x) for x in user_info) + "\n")
 
-def unfollow_users(cl: Client, unfollow_after: int) -> None:
+async def unfollow_users(cl: Client, unfollow_after: int) -> None:
     """Unfollow users after a specified time."""
     logger.info("Started unfollowing process")
     followed_users = load_followed_users(cl)
@@ -88,7 +89,7 @@ def unfollow_users(cl: Client, unfollow_after: int) -> None:
     for user in users_to_unfollow:
         sleep_time = calculate_sleep_time(unfollow_users_count)
         logger.info(f"Sleeping for {sleep_time} before unfollowing {user}")
-        asyncio.sleep(sleep_time)
+        await asyncio.sleep(sleep_time)
         try:
             cl.user_unfollow(user)
         except Exception as e:
