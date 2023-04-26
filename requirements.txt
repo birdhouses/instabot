@@ -1,2 +1,3 @@
 instagrapi==1.17.5
-instaloader==4.8.1
+python_dateutil==2.8.2
+Requests==2.29.0
