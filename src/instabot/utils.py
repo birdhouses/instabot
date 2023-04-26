@@ -20,16 +20,20 @@ import logging
 import random
 from dateutil import parser
 
+logs_dir = "./artifacts/logs/"
+if not os.path.exists(logs_dir):
+    os.makedirs(logs_dir)
+
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     level=logging.INFO,
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler("logs/bot.log")
+        logging.FileHandler(logs_dir + "bot.log")
     ]
 )
+### Logger used throughout the entire project
 logger = logging.getLogger()
-
 
 def load_config(file_path: str) -> dict:
     with open(file_path, 'r') as file:
@@ -42,7 +46,7 @@ def freeze(message: str, hours: int = 0, days: int = 0) -> None:
 
 def read_proxies():
     try:
-        with open('proxies.txt', 'r') as f:
+        with open('../proxies.txt', 'r') as f:
             raw_proxies = [line.strip() for line in f.readlines()]
             return raw_proxies
     except FileNotFoundError:
@@ -96,7 +100,7 @@ def login_and_save_session(client, username, password, session_file_path):
     logger.info("Session saved to file")
 
 def get_client(username: str, password: str) -> Union[Client, None]:
-    settings_folder = "settings"
+    settings_folder = "./artifacts/settings"
     os.makedirs(settings_folder, exist_ok=True)
     session_file_path = os.path.join(settings_folder, f"settings_{username}.json")
 
