@@ -4,18 +4,27 @@ This Instagram Bot is a Python script designed to automate the process of managi
 
 Please note that using automated scripts to interact with Instagram can be against their terms of service, and your account may be at risk of being temporarily or permanently banned. Use this script at your own risk.
 
-### Current Features
+## Current Features
 - Follow users from specified source accounts
 - Unfollow users after a configured amount of time
 - Follow a configurable number of users daily
 - Post comments on recent posts by a specified hashtag
 - Like a number of posts after following a user
+- Using multiple accounts at the same time
+- Proxy support for making requests
 
-### Prerequisites
+## Proxy configuration
+Create a proxies.txt file: In the main directory of your Instagram Bot, create a file named proxies.txt. Each line in this file should represent a single proxy in the format IP:Port:Username:Password. For example:
 
-- Python 3.6+
+    123.45.67.89:8080:user1:pass1
+    98.76.54.32:8080:user2:pass2
 
-### Installation
+
+## Prerequisites
+
+- Python 3.11+
+
+## Installation
 
 Clone this repository:
 
@@ -26,10 +35,10 @@ Install the required Python packages:
 
     pip install -r requirements.txt
 
-Create a config.json file with your Instagram account credentials and desired settings (refer to the config.example.json file for an example configuration):
+Create a config.json file with your Instagram account credentials and desired settings (refer to the config.example.json file for an example configuration)
 
 
-### Usage
+## Usage
 
 Run the script:
 
