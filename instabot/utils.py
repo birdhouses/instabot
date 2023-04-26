@@ -15,9 +15,10 @@ from typing import Union, List
 import time
 import json
 import os
+import os.path
 import logging
 import random
-import requests
+from dateutil import parser
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -78,10 +79,14 @@ def load_or_login_and_save_session(client, username, password, session_file_path
         login_and_save_session(client, username, password, session_file_path)
 
 def remove_session_and_login(client, username, password, session_file_path):
-    try:
-        os.remove(session_file_path)
-    except OSError as e:
-        logger.warning(f"Error removing session file: {e}")
+    if os.path.exists(session_file_path):
+        try:
+            os.remove(session_file_path)
+            logger.info(f"Session file removed: {session_file_path}")
+        except OSError as e:
+            logger.warning(f"Error removing session file: {e}")
+    else:
+        logger.warning(f"Session file not found: {session_file_path}")
 
     login_and_save_session(client, username, password, session_file_path)
 
@@ -96,8 +101,10 @@ def get_client(username: str, password: str) -> Union[Client, None]:
     session_file_path = os.path.join(settings_folder, f"settings_{username}.json")
 
     def handle_exception(client: Client, e: Exception) -> Union[bool, None]:
+        logger.warning(f"Error while logging in: {e}")
         if isinstance(e, BadPassword):
-            raise e
+            logger.error(f"Login failed for user {username}: {e}")
+            return None
         elif isinstance(e, LoginRequired):
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
@@ -114,6 +121,7 @@ def get_client(username: str, password: str) -> Union[Client, None]:
             return True
         elif isinstance(e, RetryError):
             client.set_proxy(next_proxy())
+            freeze(e, 1)
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
         raise e
@@ -139,3 +147,10 @@ def calculate_sleep_time(actions_per_day: int) -> float:
     min_sleep_time = average_sleep_time * 0.5
     max_sleep_time = average_sleep_time * 1.5
     return random.uniform(min_sleep_time, max_sleep_time)
+
+def parse_time_string(time_string: str) -> int:
+    """Parse the time string in the format 'day-hour-min-s' into total seconds."""
+    parts = time_string.split('-')
+    days, hours, minutes, seconds = [int(part) for part in parts]
+    total_seconds = days * 86400 + hours * 3600 + minutes * 60 + seconds
+    return total_seconds
