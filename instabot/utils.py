@@ -15,6 +15,7 @@ from typing import Union, List
 import time
 import json
 import os
+import os.path
 import logging
 import random
 import requests
@@ -78,10 +79,14 @@ def load_or_login_and_save_session(client, username, password, session_file_path
         login_and_save_session(client, username, password, session_file_path)
 
 def remove_session_and_login(client, username, password, session_file_path):
-    try:
-        os.remove(session_file_path)
-    except OSError as e:
-        logger.warning(f"Error removing session file: {e}")
+    if os.path.exists(session_file_path):
+        try:
+            os.remove(session_file_path)
+            logger.info(f"Session file removed: {session_file_path}")
+        except OSError as e:
+            logger.warning(f"Error removing session file: {e}")
+    else:
+        logger.warning(f"Session file not found: {session_file_path}")
 
     login_and_save_session(client, username, password, session_file_path)
 
@@ -96,8 +101,10 @@ def get_client(username: str, password: str) -> Union[Client, None]:
     session_file_path = os.path.join(settings_folder, f"settings_{username}.json")
 
     def handle_exception(client: Client, e: Exception) -> Union[bool, None]:
+        logger.warning(f"Error while logging in: {e}")
         if isinstance(e, BadPassword):
-            raise e
+            logger.error(f"Login failed for user {username}: {e}")
+            return None
         elif isinstance(e, LoginRequired):
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
@@ -114,6 +121,7 @@ def get_client(username: str, password: str) -> Union[Client, None]:
             return True
         elif isinstance(e, RetryError):
             client.set_proxy(next_proxy())
+            freeze(e, 1)
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
         raise e
