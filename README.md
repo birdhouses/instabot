@@ -2,7 +2,7 @@
 
 An open-source solution for effortless Instagram growth. Boost your online presence with features like auto-follow, timed unfollow, targeted engagement, and multi-account management. Experience seamless and secure operation with proxy support. Elevate your social media game today!
 
-# Supporting the project
+### Supporting the project
 Please consider donating to support the project, thank you!
 
 [![Become a Patron](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/birdhouses) <br>
