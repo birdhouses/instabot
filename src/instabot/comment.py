@@ -39,7 +39,7 @@ async def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
         return
 
 def save_comment(comment_pk: int, username: str):
-    comment_folder = "./artifacts/comments"
+    comment_folder = "./artifacts/logs/comments"
     os.makedirs(comment_folder, exist_ok=True)
     comment_file_path = os.path.join(comment_folder, f"comments_{username}.json")
 
