@@ -1,4 +1,4 @@
-# Instagram Bot
+# InstaBot
 
 This Instagram Bot is a Python script designed to automate the process of managing Instagram account(s). It uses the instagrapi library to interact with the Instagram API.
 
