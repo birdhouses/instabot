@@ -50,5 +50,5 @@ Create a config.json file with your Instagram account credentials and desired se
 
 Run the script:
 
-    python3 main.py
+    /instabot/src python3.11 main.py
 
