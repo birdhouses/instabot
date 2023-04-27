@@ -12,21 +12,21 @@ async def main(account):
     logger.info(f'Started process for {username}')
 
     async with asyncio.TaskGroup() as tg:
-        # if account['follow_users']['enabled']:
-        #     cl = instabot.get_client(username, password)
-        #     follow_task = tg.create_task(
-        #         follow_user_followers(cl, account)
-        #     )
-        # if account['unfollow_users']['enabled']:
-        #     cl = instabot.get_client(username, password)
-        #     unfollow_task = tg.create_task(
-        #         unfollow_users(cl, account)
-        #     )
-        # if account['comment_on_media']['enabled']:
-        #     cl = instabot.get_client(username, password)
-        #     comment_task = tg.create_task(
-        #         comment_on_media(cl, account)
-        #     )
+        if account['follow_users']['enabled']:
+            cl = instabot.get_client(username, password)
+            follow_task = tg.create_task(
+                follow_user_followers(cl, account)
+            )
+        if account['unfollow_users']['enabled']:
+            cl = instabot.get_client(username, password)
+            unfollow_task = tg.create_task(
+                unfollow_users(cl, account)
+            )
+        if account['comment_on_media']['enabled']:
+            cl = instabot.get_client(username, password)
+            comment_task = tg.create_task(
+                comment_on_media(cl, account)
+            )
         if account['media_auto_discovery']['enabled']:
             media_task = tg.create_task(
                 media_auto_discovery(account)

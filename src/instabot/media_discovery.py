@@ -24,7 +24,7 @@ async def media_auto_discovery(account):
         for post in posts:
             if await passes_requirements(client, post, config):
                 store_post(client, account, post)
-                asyncio.sleep(sleep_time)
+                await asyncio.sleep(sleep_time)
 
 async def passes_requirements(cl, post, config):
     return (await check_post_requirements(cl, post, config) and
