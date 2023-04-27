@@ -4,6 +4,12 @@ import langdetect
 from instagrapi import Client
 import os
 
+MIN_LIKES = "min_likes"
+MIN_COMMENTS = "min_comments"
+DETECT_CAPTION_LANGUAGE = "detect_caption_language"
+LANGUAGES = "languages"
+ALLOWED_POST_TYPES = "allowed_post_types"
+
 async def media_auto_discovery(account):
     config = account['media_auto_discovery']
 
@@ -17,49 +23,57 @@ async def media_auto_discovery(account):
                 store_post(client, account, post)
                 asyncio.sleep(sleep_time)
 
-
 async def passes_requirements(cl, post, config):
+    return (await check_post_requirements(cl, post, config) and
+            await check_author_requirements(cl, post, config))
+
+async def check_post_requirements(cl, post, config):
+    post_req = config['post_requirements']
     post = cl.media_info(post.id)
-    if post.like_count < config['post_requirements']['min_likes']:
-        instabot.logger.info(f"Post {post.id} has less than {config['post_requirements']['min_likes']} likes")
+
+    if post.like_count < post_req[MIN_LIKES] or post.comment_count < post_req[MIN_COMMENTS]:
         return False
-    if post.comment_count < config['post_requirements']['min_comments']:
-        instabot.logger.info(f"Post {post.id} has less than {config['post_requirements']['min_comments']} comments")
+
+    if post_req[DETECT_CAPTION_LANGUAGE]:
+        if not is_language_allowed(post.caption_text, post_req[LANGUAGES]):
+            return False
+
+    if not is_post_type_allowed(post, post_req[ALLOWED_POST_TYPES]):
         return False
-    if config['post_requirements']['detect_caption_language']:
-        try:
-            detected_language = langdetect.detect(post.caption_text)
-            if detected_language not in config['post_requirements']['languages']:
-                instabot.logger.info(f"Post {post.id} has language {detected_language} not in {config['post_requirements']['languages']}")
-                return False
-        except:
-            instabot.logger.info(f"Post {post.id} caption has no language")
-            return True
-    if not post_type_check(post, config):
-        instabot.logger.info(f"Post {post.id} has type {post.media_type} not in {config['post_requirements']['allowed_post_types']}")
-        return False
-    if config['author_requirements']['enabled']:
-        author = cl.user_info_by_username(post.user.username)
-        if config['author_requirements']['min_followers'] >= author.follower_count:
-            instabot.logger.info(f"Author has less than {config['author_requirements']['min_followers']} followers")
-            return False
-        if config['author_requirements']['max_following'] <= author.following_count:
-            instabot.logger.info(f"Author has more than {config['author_requirements']['max_following']} following")
-            return False
-        if config['author_requirements']['detect_biography_keywords']:
-            if not has_keywords(author.biography, config['author_requirements']['biography_keywords']):
-                instabot.logger.info(f"Author biography does not have keywords in {config['author_requirements']['biography_keywords']}")
-            return False
-        if config['author_requirements']['detect_biography_language']:
-            try:
-                detected_language = langdetect.detect(author.biography)
-                if detected_language not in config['author_requirements']['languages']:
-                    instabot.logger.info(f"Author biography has language {detected_language} not in {config['author_requirements']['languages']}")
-                    return False
-            except:
-                instabot.logger.info(f"Author biography has no language")
-                return True
+
     return True
+
+async def check_author_requirements(cl, post, config):
+    author_req = config['author_requirements']
+    if not author_req['enabled']:
+        return True
+
+    author = cl.user_info_by_username(post.user.username)
+
+    if (author_req['min_followers'] >= author.follower_count or
+            author_req['max_following'] <= author.following_count):
+        return False
+
+    if author_req['detect_biography_keywords']:
+        if not has_keywords(author.biography, author_req['biography_keywords']):
+            return False
+
+    if author_req['detect_biography_language']:
+        if not is_language_allowed(author.biography, author_req[LANGUAGES]):
+            return False
+
+    return True
+
+def is_language_allowed(text, allowed_languages):
+    try:
+        detected_language = langdetect.detect(text)
+        return detected_language in allowed_languages
+    except:
+        return True
+
+def is_post_type_allowed(post, allowed_post_types):
+    post_type = get_post_type(post)
+    return post_type is None or post_type.lower() in allowed_post_types
 
 def get_post_type(post):
     if post.media_type == 1:
@@ -70,20 +84,7 @@ def get_post_type(post):
         return 'igtv'
     elif post.media_type == 8:
         return 'album'
-
     return None
-
-def post_type_check(post, config):
-    post_type = get_post_type(post)
-    allowed_post_types = config['post_requirements']['allowed_post_types']
-    allowed_post_types_lower = [post_type.lower() for post_type in allowed_post_types]
-    if post_type != None:
-        if allowed_post_types_lower is None:
-            return True
-        if post_type not in allowed_post_types_lower:
-            instabot.logger.info(f"Post {post.id} has type {post.media_type} not in {config['post_requirements']['types']}")
-            return False
-        return True
 
 def has_keywords(biography, keywords):
     biography_lower = biography.lower()
@@ -93,21 +94,31 @@ def store_post(cl, account, post):
     photo_download_path = f"./saved_posts/{account['username']}/photo_downloads"
     video_download_path = f"./saved_posts/{account['username']}/video_downloads"
     album_download_path = f"./saved_posts/{account['username']}/album_downloads"
+
     if post.media_type == 1:
-        os.makedirs(photo_download_path, exist_ok=True)
-        try:
-            cl.photo_download(post.pk, photo_download_path)
-        except:
-            instabot.logger.info(f"Failed to download photo for post {post.id}")
+        download_photo(cl, post, photo_download_path)
     elif post.media_type == 2:
-        os.makedirs(video_download_path, exist_ok=True)
-        try:
-            cl.video_download(post.pk, video_download_path)
-        except:
-            instabot.logger.info(f"Failed to download video for post {post.id}")
+        download_video(cl, post, video_download_path)
     elif post.media_type == 8:
-        os.makedirs(album_download_path, exist_ok=True)
-        try:
-            cl.album_download(post.pk, album_download_path)
-        except:
-            instabot.logger.info(f"Failed to download album for post {post.id}")
+        download_album(cl, post, album_download_path)
+
+def download_photo(cl, post, photo_download_path):
+    os.makedirs(photo_download_path, exist_ok=True)
+    try:
+        cl.photo_download(post.pk, photo_download_path)
+    except:
+        instabot.logger.info(f"Failed to download photo for post {post.id}")
+
+def download_video(cl, post, video_download_path):
+    os.makedirs(video_download_path, exist_ok=True)
+    try:
+        cl.video_download(post.pk, video_download_path)
+    except:
+        instabot.logger.info(f"Failed to download video for post {post.id}")
+
+def download_album(cl, post, album_download_path):
+    os.makedirs(album_download_path, exist_ok=True)
+    try:
+        cl.album_download(post.pk, album_download_path)
+    except:
+        instabot.logger.info(f"Failed to download album for post {post.id}")
