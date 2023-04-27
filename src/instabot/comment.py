@@ -5,19 +5,8 @@ from typing import List, Dict, Any
 import os
 import datetime
 import random
-from instabot import calculate_sleep_time
+from instabot import calculate_sleep_time, logger
 import asyncio
-
-logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    level=logging.INFO,
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("logs/bot.log")
-    ]
-)
-
-logger = logging.getLogger()
 
 async def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
     try:
@@ -50,7 +39,7 @@ async def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
         return
 
 def save_comment(comment_pk: int, username: str):
-    comment_folder = "comments"
+    comment_folder = "./artifacts/logs/comments"
     os.makedirs(comment_folder, exist_ok=True)
     comment_file_path = os.path.join(comment_folder, f"comments_{username}.json")
 

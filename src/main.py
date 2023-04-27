@@ -31,7 +31,7 @@ def run_account(account):
     asyncio.run(main(account))
 
 if __name__ == "__main__":
-    config = instabot.load_config('config.json')
+    config = instabot.load_config('../config.json')
 
     # Get the accounts from the configuration file
     accounts = config['accounts']

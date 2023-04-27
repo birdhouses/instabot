@@ -1,20 +1,8 @@
 from instagrapi import Client
-import logging
-import time
 from typing import List, Dict, Any
 import random
 import asyncio
-
-logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    level=logging.INFO,
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("logs/bot.log")
-    ]
-)
-
-logger = logging.getLogger()
+from instabot import logger
 
 async def like_recent_posts(cl: Client, user_id: int, engagement: Dict[str, Any]) -> None:
     like_count = engagement['like_count']

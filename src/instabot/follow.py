@@ -8,22 +8,14 @@ import os
 from .like_media import like_recent_posts
 from .utils import load_config, calculate_sleep_time
 import asyncio
+from instabot import logger
 import instabot
 
-logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    level=logging.INFO,
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("logs/bot.log")
-    ]
-)
-
-logger = logging.getLogger()
+followed_users_folder = "./artifacts/logs/followed_users"
 
 def save_followed_user(cl: Client, user_id: int) -> None:
     """Save followed user ID and timestamp to a file."""
-    followed_users_folder = "followed_users"
+
     os.makedirs(followed_users_folder, exist_ok=True)
     file_path = os.path.join(followed_users_folder, f"followed_users_{cl.user_id}.txt")
 
@@ -33,7 +25,7 @@ def save_followed_user(cl: Client, user_id: int) -> None:
 def load_followed_users(cl: Client) -> List[Tuple[int, datetime.datetime]]:
     """Load followed users' IDs and timestamps from a file."""
     followed_users = []
-    followed_users_folder = "followed_users"
+
     os.makedirs(followed_users_folder, exist_ok=True)
     file_path = os.path.join(followed_users_folder, f"followed_users_{cl.user_id}.txt")
 
@@ -60,7 +52,6 @@ def remove_unfollowed_user(cl: Client, user: int) -> None:
     followed_users = load_followed_users(cl)
     followed_users.remove(user)
 
-    followed_users_folder = "followed_users"
     os.makedirs(followed_users_folder, exist_ok=True)
     file_path = os.path.join(followed_users_folder, f"followed_users_{cl.user_id}.txt")
 
@@ -73,7 +64,6 @@ def mark_unfollowed_user(cl: Client, user_id: int) -> None:
     followed_users = load_followed_users(cl)
     followed_users = [(user, timestamp) if user != user_id else (user, timestamp, datetime.datetime.now()) for user, timestamp in followed_users]
 
-    followed_users_folder = "followed_users"
     os.makedirs(followed_users_folder, exist_ok=True)
     file_path = os.path.join(followed_users_folder, f"followed_users_{cl.user_id}.txt")
 
