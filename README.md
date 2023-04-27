@@ -1,3 +1,7 @@
+# Instagram Bot
+
+This Instagram Bot is a Python script designed to automate the process of managing Instagram account(s). It uses the instagrapi library to interact with the Instagram API.
+
 # Supporting the project
 Please consider donating to support the project, thank you!
 
@@ -5,9 +9,7 @@ Please consider donating to support the project, thank you!
 
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a-Coffee-orange)](https://www.buymeacoffee.com/birdhouses) <br>
 
-# Instagram Bot
 
-This Instagram Bot is a Python script designed to automate the process of managing Instagram account(s). It uses the instagrapi library to interact with the Instagram API.
 
 Please note that using automated scripts to interact with Instagram can be against their terms of service, and your account may be at risk of being temporarily or permanently banned. Use this bot at your own risk.
 
