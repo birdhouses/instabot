@@ -19,6 +19,7 @@ Please note that using automated scripts to interact with Instagram can be again
 - Like a number of posts after following a user
 - Using multiple accounts at the same time
 - Proxy support for making requests
+- Automatically download posts from a specified tag, based on user requirements
 
 ## Proxy configuration
 Create a proxies.txt file: In the main directory of your Instagram Bot, create a file named proxies.txt. Each line in this file should represent a single proxy in the format IP:Port:Username:Password. For example:
