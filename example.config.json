@@ -36,7 +36,6 @@
           "detect_caption_language": true,
           "languages": ["en"],
           "allowed_post_types": [
-            /** Empty array means all types **/
             "photo",
             "video",
             "igtv",
