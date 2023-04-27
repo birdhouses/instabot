@@ -1,6 +1,6 @@
 # InstaBot
 
-This Instagram Bot is a Python script designed to automate the process of managing Instagram account(s). It uses the instagrapi library to interact with the Instagram API.
+An open-source solution for effortless Instagram growth. Boost your online presence with features like auto-follow, timed unfollow, targeted engagement, and multi-account management. Experience seamless and secure operation with proxy support. Elevate your social media game today!
 
 # Supporting the project
 Please consider donating to support the project, thank you!
