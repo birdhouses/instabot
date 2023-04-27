@@ -1,6 +1,6 @@
 import instabot
 import asyncio
-from instabot import follow_user_followers, unfollow_users, comment_on_media, media_auto_discovery, logger, get_unauthenticated_client
+from instabot import follow_user_followers, unfollow_users, comment_on_media, media_auto_discovery, logger
 from instabot import logger
 from threading import Thread
 from instagrapi import Client

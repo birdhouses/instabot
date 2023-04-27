@@ -11,7 +11,7 @@ async def media_auto_discovery(account):
     for post in posts:
         reqs_check_client = Client()
         if passes_requirements(reqs_check_client, post, config):
-            save_post(account, post)
+            store_post(account, post)
 
 async def passes_requirements(cl, post, config):
     post = await cl.media_info(post.id)
@@ -26,6 +26,9 @@ async def passes_requirements(cl, post, config):
         if detected_language not in config['post_requirements']['languages']:
             instabot.logger.info(f"Post {post.id} has language {detected_language} not in {config['post_requirements']['languages']}")
             return False
+    if not post_type_check(post, config):
+        instabot.logger.info(f"Post {post.id} has type {post.media_type} not in {config['post_requirements']['allowed_post_types']}")
+        return False
     if config['author_requirements']['enabled']:
         author = await cl.user_info_by_username(post.user.username)
         if config['author_requirements']['min_followers'] >= author.follower_count:
@@ -45,9 +48,33 @@ async def passes_requirements(cl, post, config):
                 return False
     return True
 
+def get_post_type(post):
+    if post.media_type == '1':
+        return 'photo'
+    elif post.media_type == '2' & post.product_type == 'feed':
+        return 'video'
+    elif post.media_type == '2' & post.product_type == 'igtv':
+        return 'igtv'
+    elif post.media_type == '8':
+        return 'album'
+
+    return None
+
+def post_type_check(post, config):
+    post_type = get_post_type(post)
+    allowed_post_types = config['post_requirements']['allowed_post_types']
+    allowed_post_types_lower = [post_type.lower() for post_type in allowed_post_types]
+    if post_type != None:
+        if allowed_post_types_lower is None:
+            return True
+        if post.type not in allowed_post_types_lower:
+            instabot.logger.info(f"Post {post.id} has type {post.media_type} not in {config['post_requirements']['types']}")
+            return False
+        return True
+
 def has_keywords(biography, keywords):
     biography_lower = biography.lower()
     return any(keyword.lower() in biography_lower for keyword in keywords)
 
-def save_post(account, post):
-    print("To be implemented")
+def store_post(account, post):
+    print(post)
