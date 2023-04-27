@@ -9,7 +9,7 @@ Please consider donating to support the project, thank you!
 
 This Instagram Bot is a Python script designed to automate the process of managing Instagram account(s). It uses the instagrapi library to interact with the Instagram API.
 
-Please note that using automated scripts to interact with Instagram can be against their terms of service, and your account may be at risk of being temporarily or permanently banned. Use this script at your own risk.
+Please note that using automated scripts to interact with Instagram can be against their terms of service, and your account may be at risk of being temporarily or permanently banned. Use this bot at your own risk.
 
 ## Current Features
 - Follow users from specified source accounts
