@@ -1,30 +1,62 @@
 {
-    "accounts": [
-      {
-        "username": "username",
-        "password": "password",
-        "follow_users": {
-          "enabled": true,
-          "follows_per_day": 100,
-          "source_account": "instagram",
-          "engagement": {
-            "like_recent_posts": true,
-            "like_count": 3
-          }
-        },
-        "unfollow_users": {
-          "enabled": true,
-          "unfollow_after": "days-hours-minutes-seconds"
-        },
-        "comment_on_media": {
-          "enabled": true,
-          "comment_on_tag": "hashtag",
-          "amount_per_day": 5,
-          "comments": [
-            "Comment 1.."
+  "accounts": [
+    {
+      "username": "username",
+      "password": "password",
+      "follow_users": {
+        "enabled": true,
+        "follows_per_day": 20,
+        "source_account": "instagram",
+        "engagement": {
+          "like_recent_posts": true,
+          "like_count": 3
+        }
+      },
+      "unfollow_users": {
+        "enabled": true,
+        "unfollow_after": "0-12-0-0"
+      },
+      "comment_on_media": {
+        "enabled": true,
+        "comment_on_tag": "instagram",
+        "amount_per_day": 50,
+        "comments": [
+          "Comments ..."
+        ]
+      },
+      "media_auto_discovery": {
+        "enabled": true,
+        "from_tag": "instagram",
+        "amount_per_day": 2,
+        "save_captions": true,
+        "avoid_duplicates": true,
+        "post_requirements": {
+          "min_likes": 1,
+          "min_comments": 1,
+          "detect_caption_language": true,
+          "languages": ["en"],
+          "allowed_post_types": [
+            "photo",
+            "video",
+            "igtv",
+            "reel",
+            "album"
           ]
+        },
+        "author_requirements": {
+          "enabled": true,
+          "detect_biography_keywords": false,
+          "biography_keywords": [
+            "keyword",
+            "another one"
+          ],
+          "detect_biography_language": true,
+          "languages": ["en"],
+          "min_followers": 1,
+          "max_following": 1000
         }
       }
-    ]
-  }
+    }
+  ]
+}
 

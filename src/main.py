@@ -1,8 +1,9 @@
 import instabot
 import asyncio
-from instabot import follow_user_followers, unfollow_users, comment_on_media
+from instabot import follow_user_followers, unfollow_users, comment_on_media, media_auto_discovery, logger
 from instabot import logger
 from threading import Thread
+from instagrapi import Client
 
 async def main(account):
     username = account['username']
@@ -25,6 +26,13 @@ async def main(account):
             cl = instabot.get_client(username, password)
             comment_task = tg.create_task(
                 comment_on_media(cl, account)
+            )
+        if account['media_auto_discovery']['enabled']:
+            ### TODO: Check if unauthenticated IG account proxy requests are working
+            ### If they are not working, use authenticated IG account for proxy
+            cl = instabot.get_client(account['username'], account['password'])
+            media_task = tg.create_task(
+                media_auto_discovery(cl, account)
             )
 
 def run_account(account):

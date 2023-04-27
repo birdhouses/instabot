@@ -10,6 +10,7 @@ session.json
 /followed_users
 /comments
 /src/artifacts/*
+/src/saved_posts/
 # C extensions
 *.so
 
