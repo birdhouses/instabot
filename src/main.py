@@ -28,8 +28,11 @@ async def main(account):
                 comment_on_media(cl, account)
             )
         if account['media_auto_discovery']['enabled']:
+            ### TODO: Check if unauthenticated IG account proxy requests are working
+            ### If they are not working, use authenticated IG account for proxy
+            cl = instabot.get_client(account['username'], account['password'])
             media_task = tg.create_task(
-                media_auto_discovery(account)
+                media_auto_discovery(cl, account)
             )
 
 def run_account(account):

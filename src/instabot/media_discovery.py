@@ -10,13 +10,8 @@ DETECT_CAPTION_LANGUAGE = "detect_caption_language"
 LANGUAGES = "languages"
 ALLOWED_POST_TYPES = "allowed_post_types"
 
-async def media_auto_discovery(account):
+async def media_auto_discovery(client, account):
     config = account['media_auto_discovery']
-
-    ### TODO: Check if unauthenticated IG account proxy requests are working
-    ### If they are not working, use authenticated IG account for proxy
-
-    client = instabot.get_client(account['username'], account['password'])
 
     while True:
         posts = client.hashtag_medias_top(config['from_tag'])
