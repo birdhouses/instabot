@@ -99,7 +99,11 @@ def login_and_save_session(client, username, password, session_file_path):
     client.dump_settings(session_file_path)
     logger.info("Session saved to file")
 
-def get_client(username: str, password: str) -> Union[Client, None]:
+def get_client(account) -> Union[Client, None]:
+    username = account['username']
+    password = account['password']
+    use_proxy = account['use_proxy']
+
     settings_folder = "./artifacts/settings"
     os.makedirs(settings_folder, exist_ok=True)
     session_file_path = os.path.join(settings_folder, f"settings_{username}.json")
@@ -115,30 +119,37 @@ def get_client(username: str, password: str) -> Union[Client, None]:
         elif isinstance(e, ChallengeRequired):
             raise e
         elif isinstance(e, FeedbackRequired):
-            client.set_proxy(next_proxy())
+            switchproxy(client, use_proxy=use_proxy)
+
             freeze(e, hours=1)
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
         elif isinstance(e, PleaseWaitFewMinutes):
-            client.set_proxy(next_proxy())
+            switchproxy(client, use_proxy=use_proxy)
             freeze(e, 1)
             return True
         elif isinstance(e, RetryError):
-            client.set_proxy(next_proxy())
+            switchproxy(client, use_proxy=use_proxy)
             freeze(e, 1)
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
         raise e
 
     client = Client()
-    proxy = next_proxy()
-    logger.info(proxy)
-    client.set_proxy(next_proxy())
+
+    switchproxy(client, use_proxy=use_proxy)
 
     client.handle_exception = handle_exception
     load_or_login_and_save_session(client, username, password, session_file_path)
 
     return client
+
+def switchproxy(client: Client, use_proxy: bool) -> None:
+    if use_proxy:
+        print(use_proxy)
+        client.set_proxy(next_proxy())
+    else:
+        return
 
 def get_user_id(cl: Client, source_account: str) -> int:
     return cl.user_id_from_username(source_account)
