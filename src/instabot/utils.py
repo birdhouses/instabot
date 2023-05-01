@@ -37,7 +37,11 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 def get_approximate_sleep_time(days=0, hours=0, minutes=0) -> int:
-    return (days * 86400 + hours * 3600 + minutes * 60)
+    total_seconds =  days * 86400 + hours * 3600 + minutes * 60
+    min_time = total_seconds * 0.5
+    max_time = total_seconds * 1.5
+
+    return random.uniform(min_time, max_time)
 
 
 def load_config(file_path: str) -> dict:
