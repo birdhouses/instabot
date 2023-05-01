@@ -1,7 +1,5 @@
-import instabot
+from instabot import utils, follow, comment, media
 import asyncio
-from instabot import follow_user_followers, unfollow_users, comment_on_media, media_auto_discovery, logger
-from instabot import logger
 from threading import Thread
 from instagrapi import Client
 
@@ -9,36 +7,36 @@ async def main(account):
     username = account['username']
     password = account['password']
 
-    logger.info(f'Started process for {username}')
+    utils.logger.info(f'Started process for {username}')
 
     while True:
         async with asyncio.TaskGroup() as tg:
             if account['follow_users']['enabled']:
-                cl = instabot.get_client(account)
+                cl = utils.get_client(account)
                 follow_task = tg.create_task(
-                    follow_user_followers(cl, account)
+                    follow.follow_user_followers(cl, account)
                 )
             if account['unfollow_users']['enabled']:
-                cl = instabot.get_client(account)
+                cl = utils.get_client(account)
                 unfollow_task = tg.create_task(
-                    unfollow_users(cl, account)
+                    follow.unfollow_users(cl, account)
                 )
             if account['comment_on_media']['enabled']:
-                cl = instabot.get_client(account)
+                cl = utils.get_client(account)
                 comment_task = tg.create_task(
-                    comment_on_media(cl, account)
+                    comment.comment_on_media(cl, account)
                 )
             if account['media_auto_discovery']['enabled']:
                 cl = Client(request_timeout=account['media_auto_discovery']['request_timeout'])
                 media_task = tg.create_task(
-                    media_auto_discovery(cl, account)
+                    media.media_auto_discovery(cl, account)
                 )
 
 def run_account(account):
     asyncio.run(main(account))
 
 if __name__ == "__main__":
-    config = instabot.load_config('../config.json')
+    config = utils.load_config('../config.json')
 
     # Get the accounts from the configuration file
     accounts = config['accounts']

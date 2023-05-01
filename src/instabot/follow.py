@@ -5,10 +5,7 @@ import datetime
 from instagrapi import Client
 from typing import Any, List, Tuple, Dict
 import os
-from .like_media import like_recent_posts
-from .utils import load_config, calculate_sleep_time
 import asyncio
-from instabot import logger
 import instabot
 
 followed_users_folder = "./artifacts/logs/followed_users"

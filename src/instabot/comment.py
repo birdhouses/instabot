@@ -5,7 +5,7 @@ from typing import List, Dict, Any
 import os
 import datetime
 import random
-from instabot import calculate_sleep_time, logger
+from instabot import utils
 import asyncio
 
 async def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
