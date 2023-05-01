@@ -19,6 +19,7 @@ import os.path
 import logging
 import random
 from dateutil import parser
+import asyncio
 
 logs_dir = "./artifacts/logs/"
 if not os.path.exists(logs_dir):
@@ -35,14 +36,18 @@ logging.basicConfig(
 ### Logger used throughout the entire project
 logger = logging.getLogger()
 
+def get_approximate_sleep_time(days=0, hours=0, minutes=0) -> int:
+    return (days * 86400 + hours * 3600 + minutes * 60)
+
+
 def load_config(file_path: str) -> dict:
     with open(file_path, 'r') as file:
         return json.load(file)
 
-def freeze(message: str, hours: int = 0, days: int = 0) -> None:
+async def freeze(message: str, hours: int = 0, days: int = 0) -> None:
     print(f"Freezing due to: {message}")
     freeze_time = hours * 3600 + days * 86400
-    time.sleep(freeze_time)
+    await asyncio.sleep(freeze_time)
 
 def read_proxies():
     try:
@@ -99,7 +104,7 @@ def login_and_save_session(client, username, password, session_file_path):
     client.dump_settings(session_file_path)
     logger.info("Session saved to file")
 
-def get_client(account) -> Union[Client, None]:
+async def get_client(account) -> Union[Client, None]:
     username = account['username']
     password = account['password']
     use_proxy = account['use_proxy']
@@ -108,7 +113,7 @@ def get_client(account) -> Union[Client, None]:
     os.makedirs(settings_folder, exist_ok=True)
     session_file_path = os.path.join(settings_folder, f"settings_{username}.json")
 
-    def handle_exception(client: Client, e: Exception) -> Union[bool, None]:
+    async def handle_exception(client: Client, e: Exception) -> Union[bool, None]:
         logger.warning(f"Error while logging in: {e}")
         if isinstance(e, BadPassword):
             logger.error(f"Login failed for user {username}: {e}")
@@ -121,16 +126,16 @@ def get_client(account) -> Union[Client, None]:
         elif isinstance(e, FeedbackRequired):
             switchproxy(client, use_proxy=use_proxy)
 
-            freeze(e, hours=1)
+            await freeze(e, hours=1)
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
         elif isinstance(e, PleaseWaitFewMinutes):
             switchproxy(client, use_proxy=use_proxy)
-            freeze(e, 1)
+            await freeze(e, 1)
             return True
         elif isinstance(e, RetryError):
             switchproxy(client, use_proxy=use_proxy)
-            freeze(e, 1)
+            await freeze(e, 1)
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
         raise e

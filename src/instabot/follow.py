@@ -41,7 +41,7 @@ def load_followed_users(cl: Client) -> List[Tuple[int, datetime.datetime]]:
 def filter_users_to_unfollow(followed_users: List[Tuple[int, datetime.datetime]], follow_time: str) -> List[int]:
     """Filter users that should be unfollowed based on follow_time."""
     now = datetime.datetime.now()
-    follow_time_seconds = instabot.parse_time_string(follow_time)
+    follow_time_seconds = utils.parse_time_string(follow_time)
     return [user for user, timestamp, *unfollow_timestamp in followed_users if (now - timestamp).total_seconds() >= follow_time_seconds and not unfollow_timestamp]
 
 
@@ -102,8 +102,13 @@ async def follow_user(cl: Client, user_id: int, engagement: Dict[str, Any]) -> b
     """Follow a user and add it to followed_users file."""
 
     if user_not_followed_before(cl, user_id):
-        cl.user_follow(user_id)
-        save_followed_user(cl, user_id=user_id)
+        try:
+            cl.user_follow(user_id)
+            save_followed_user(cl, user_id=user_id)
+
+        except:
+            utils.logger.exception('Error while trying to follow user')
+            return False
 
         if engagement["like_recent_posts"]:
             await like.like_recent_posts(cl, user_id=user_id, engagement=engagement)
@@ -111,6 +116,7 @@ async def follow_user(cl: Client, user_id: int, engagement: Dict[str, Any]) -> b
         utils.logger.info(f"Followed user: {user_id}")
 
         return True
+
     utils.logger.info("User was followed before, skipped")
 
     return False
@@ -124,12 +130,21 @@ async def follow_user_followers(cl: Client, account: Dict[str, Any]) -> None:
     follows_per_day = account['follow_users']['follows_per_day']
     engagement = account['follow_users']['engagement']
 
-    user_id = cl.user_id_from_username(source_account)
+    try:
+        user_id = cl.user_id_from_username(source_account)
+    except Exception as e:
+        utils.logger.error(f"Error while trying to get user id from username {source_account}: {e}")
+        return
+
     average_sleep_time = 86400 / follows_per_day
     min_sleep_time = average_sleep_time * 0.5
     max_sleep_time = average_sleep_time * 1.5
 
-    users = cl.user_followers(user_id, True, amount=follows_per_day)
+    try:
+        users = cl.user_followers(user_id, True, amount=follows_per_day)
+    except Exception as e:
+        utils.logger.error(f"Error while trying to get followers of user {user_id}: {e}")
+        return
 
     async def process_user(user):
         try:

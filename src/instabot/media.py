@@ -3,6 +3,7 @@ import asyncio
 import langdetect
 from instagrapi import Client
 import os
+from instabot import utils
 
 MIN_LIKES = "min_likes"
 MIN_COMMENTS = "min_comments"
@@ -12,14 +13,23 @@ ALLOWED_POST_TYPES = "allowed_post_types"
 
 async def media_auto_discovery(client, account):
     config = account['media_auto_discovery']
+    approx_sleep_time = utils.get_approximate_sleep_time(hours=3)
 
-    while True:
-        posts = client.hashtag_medias_top(config['from_tag'])
-        sleep_time = instabot.calculate_sleep_time(config['amount_per_day'])
-        for post in posts:
-            if await passes_requirements(client, post, config):
-                store_post(client, account, post)
-                await asyncio.sleep(sleep_time)
+    # Get fresh posts every +- 3 hours
+    try:
+        posts = client.hashtag_medias_top(config['from_tag'], 1)
+        utils.logger.info(f"Auto-discovered {len(posts)} media posts")
+    except Exception as e:
+        utils.logger.error(f"Failed to auto-discover media posts: {e}")
+        return await asyncio.sleep(1)
+
+    utils.logger.info(f"Auto-discovered {len(posts)} media posts")
+
+    for post in posts:
+        utils.logger.info(f"Auto-discovered media {post.id}")
+        if await passes_requirements(client, post, config):
+            store_post(client, account, post)
+            await asyncio.sleep(approx_sleep_time)
 
 async def passes_requirements(cl, post, config):
     return (await check_post_requirements(cl, post, config) and
@@ -105,21 +115,21 @@ def download_photo(cl, post, photo_download_path):
     try:
         cl.photo_download(post.pk, photo_download_path)
     except:
-        instabot.logger.info(f"Failed to download photo for post {post.id}")
+        utils.logger.info(f"Failed to download photo for post {post.id}")
 
 def download_video(cl, post, video_download_path):
     os.makedirs(video_download_path, exist_ok=True)
     try:
         cl.video_download(post.pk, video_download_path)
     except:
-        instabot.logger.info(f"Failed to download video for post {post.id}")
+        utils.logger.info(f"Failed to download video for post {post.id}")
 
 def download_album(cl, post, album_download_path):
     os.makedirs(album_download_path, exist_ok=True)
     try:
         cl.album_download(post.pk, album_download_path)
     except:
-        instabot.logger.info(f"Failed to download album for post {post.id}")
+        utils.logger.info(f"Failed to download album for post {post.id}")
 
 def recent_medias_hashtag_no_auth(tag: str, amount: int):
     client = Client()
@@ -130,6 +140,6 @@ def recent_medias_hashtag_no_auth(tag: str, amount: int):
             posts = client.hashtag_medias_recent_v1(tag, amount)
 
         return posts
-    except:
-        instabot.logger.info(f"Failed to get recent medias for tag {tag}")
-        return []
+    except Exception as e:
+        utils.logger.info(f"Failed to get recent medias for tag {tag}. {e}")
+        return False
