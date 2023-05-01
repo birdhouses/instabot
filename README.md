@@ -1,6 +1,5 @@
 # InstaBot
-
-An open-source solution for effortless Instagram growth. Boost your online presence with features like auto-follow, timed unfollow, targeted engagement, and multi-account management. Experience seamless and secure operation with proxy support. Elevate your social media game today!
+Follow4follow instagram bot.
 
 Please note that using automated scripts to interact with Instagram can be against their terms of service, and your account may be at risk of being temporarily or permanently banned. Use this bot at your own risk.
 
@@ -23,7 +22,7 @@ Please consider donating to support development of the project
 - Automatically download posts from a specified tag, based on user requirements
 
 ## Proxy configuration
-Create a proxies.txt file: In the main directory of your Instagram Bot, create a file named proxies.txt. Each line in this file should represent a single proxy in the format IP:Port:Username:Password. For example:
+In the main directory of your Instagram Bot, create a file named proxies.txt. Each line in this file should represent a single proxy in the format IP:Port:Username:Password. For example:
 
     123.45.67.89:8080:user1:pass1
     98.76.54.32:8080:user2:pass2
