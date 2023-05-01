@@ -1,12 +1,10 @@
 from instagrapi import Client
-import logging
-import time
-from typing import List, Dict, Any
+from typing import Dict, Any
 import os
 import datetime
 import random
-from instabot import utils
 import asyncio
+from instabot import utils
 
 async def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
     try:
@@ -19,22 +17,22 @@ async def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
             try:
                 comment = random.choice(account['comment_on_media']['comments'])
 
-                sleep_time = calculate_sleep_time(amount_per_day)
-                logger.info(f"Sleeping for {sleep_time} before commenting")
+                sleep_time = utils.calculate_sleep_time(amount_per_day)
+                utils.logger.info(f"Sleeping for {sleep_time} before commenting")
                 await asyncio.sleep(sleep_time)
 
                 comment = cl.media_comment(post.id, comment)
 
                 save_comment(comment.pk, account['username'])
 
-                logger.info(f"Commented on post {post.id}")
+                utils.logger.info(f"Commented on post {post.id}")
             except Exception as e:
-                logger.error(f"Error while commenting on media {post['pk']}: {e}")
+                utils.logger.error(f"Error while commenting on media {post['pk']}: {e}")
                 # Continue with the next iteration without stopping the whole task
             continue
 
     except Exception as e:
-        logger.error(f"Error while fetching media for hashtag {comment_on_tag}: {e}")
+        utils.logger.error(f"Error while fetching media for hashtag {comment_on_tag}: {e}")
          # Exit the current task without affecting other tasks
         return
 
@@ -45,4 +43,4 @@ def save_comment(comment_pk: int, username: str):
 
     with open(comment_file_path, "a") as file:
         file.write(f"{comment_pk},{datetime.datetime.now()}\n")
-        logger.info(f"Saved comment_pk to file for {username}")
+        utils.logger.info(f"Saved comment_pk to file for {username}")

@@ -7,7 +7,8 @@ from typing import Any, List, Tuple, Dict
 import os
 import asyncio
 import instabot
-
+from instabot import utils
+from instabot import like
 followed_users_folder = "./artifacts/logs/followed_users"
 
 def save_followed_user(cl: Client, user_id: int) -> None:
@@ -70,23 +71,23 @@ def mark_unfollowed_user(cl: Client, user_id: int) -> None:
 
 async def unfollow_users(cl: Client, account: Dict[str, Any]) -> None:
     """Unfollow users after a specified time."""
-    logger.info("Started unfollowing process")
+    utils.logger.info("Started unfollowing process")
     unfollow_after = account["unfollow_users"]["unfollow_after"]
     followed_users = load_followed_users(cl)
     users_to_unfollow = filter_users_to_unfollow(followed_users, follow_time=unfollow_after)
     unfollow_users_count = len(users_to_unfollow)
-    logger.info(f"Going to unfollow {unfollow_users_count} users")
+    utils.logger.info(f"Going to unfollow {unfollow_users_count} users")
     for user in users_to_unfollow:
-        sleep_time = calculate_sleep_time(unfollow_users_count)
-        logger.info(f"Sleeping for {sleep_time} before unfollowing {user}")
+        sleep_time = utils.calculate_sleep_time(unfollow_users_count)
+        utils.logger.info(f"Sleeping for {sleep_time} before unfollowing {user}")
         await asyncio.sleep(sleep_time)
         try:
             cl.user_unfollow(user)
         except Exception as e:
-            logger.exception('Error while trying to unfollow user')
+            utils.logger.exception('Error while trying to unfollow user')
             continue
 
-        logger.info(f"Tried to unfollow user {user}")
+        utils.logger.info(f"Tried to unfollow user {user}")
         mark_unfollowed_user(cl, user)
 
 def user_not_followed_before(cl: Client, user_id: int) -> bool:
@@ -105,19 +106,19 @@ async def follow_user(cl: Client, user_id: int, engagement: Dict[str, Any]) -> b
         save_followed_user(cl, user_id=user_id)
 
         if engagement["like_recent_posts"]:
-            await like_recent_posts(cl, user_id=user_id, engagement=engagement)
+            await like.like_recent_posts(cl, user_id=user_id, engagement=engagement)
 
-        logger.info(f"Followed user: {user_id}")
+        utils.logger.info(f"Followed user: {user_id}")
 
         return True
-    logger.info("User was followed before, skipped")
+    utils.logger.info("User was followed before, skipped")
 
     return False
 
 
 async def follow_user_followers(cl: Client, account: Dict[str, Any]) -> None:
     """Follow the followers of the source account and engage with their content."""
-    logger.info("Started following user followers process..")
+    utils.logger.info("Started following user followers process..")
 
     source_account = account['follow_users']['source_account']
     follows_per_day = account['follow_users']['follows_per_day']
@@ -134,10 +135,10 @@ async def follow_user_followers(cl: Client, account: Dict[str, Any]) -> None:
         try:
             if await follow_user(cl, user, engagement):
                 sleep_time = random.uniform(min_sleep_time, max_sleep_time)
-                logger.info(f"Sleeping for {sleep_time} seconds before following next user..")
+                utils.logger.info(f"Sleeping for {sleep_time} seconds before following next user..")
                 await asyncio.sleep(sleep_time)
         except Exception as e:
-            logger.error(f"Error while processing user {user}: {e}")
+            utils.logger.error(f"Error while processing user {user}: {e}")
 
     async def sequential_follow():
         for user in users:
