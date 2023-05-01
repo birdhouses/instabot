@@ -27,9 +27,10 @@ async def main(account):
                     comment.comment_on_media(cl, account)
                 )
             if account['media_auto_discovery']['enabled']:
-                anon_cl = Client(request_timeout=account['media_auto_discovery']['request_timeout'])
+                # anon_cl = Client(request_timeout=account['media_auto_discovery']['request_timeout'])
+                cl = await utils.get_client(account)
                 media_task = tg.create_task(
-                    media.media_auto_discovery(anon_cl, account)
+                    media.media_auto_discovery(cl, account)
                 )
 
 def run_account(account):
