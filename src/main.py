@@ -11,27 +11,28 @@ async def main(account):
 
     logger.info(f'Started process for {username}')
 
-    async with asyncio.TaskGroup() as tg:
-        if account['follow_users']['enabled']:
-            cl = instabot.get_client(account)
-            follow_task = tg.create_task(
-                follow_user_followers(cl, account)
-            )
-        if account['unfollow_users']['enabled']:
-            cl = instabot.get_client(account)
-            unfollow_task = tg.create_task(
-                unfollow_users(cl, account)
-            )
-        if account['comment_on_media']['enabled']:
-            cl = instabot.get_client(account)
-            comment_task = tg.create_task(
-                comment_on_media(cl, account)
-            )
-        if account['media_auto_discovery']['enabled']:
-            cl = Client(request_timeout=account['media_auto_discovery']['request_timeout'])
-            media_task = tg.create_task(
-                media_auto_discovery(cl, account)
-            )
+    while True:
+        async with asyncio.TaskGroup() as tg:
+            if account['follow_users']['enabled']:
+                cl = instabot.get_client(account)
+                follow_task = tg.create_task(
+                    follow_user_followers(cl, account)
+                )
+            if account['unfollow_users']['enabled']:
+                cl = instabot.get_client(account)
+                unfollow_task = tg.create_task(
+                    unfollow_users(cl, account)
+                )
+            if account['comment_on_media']['enabled']:
+                cl = instabot.get_client(account)
+                comment_task = tg.create_task(
+                    comment_on_media(cl, account)
+                )
+            if account['media_auto_discovery']['enabled']:
+                cl = Client(request_timeout=account['media_auto_discovery']['request_timeout'])
+                media_task = tg.create_task(
+                    media_auto_discovery(cl, account)
+                )
 
 def run_account(account):
     asyncio.run(main(account))
