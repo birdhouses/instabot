@@ -5,13 +5,14 @@ import datetime
 import random
 import asyncio
 from instabot import utils
+from instabot import media
 
 async def comment_on_media(cl: Client, account: Dict[str, Any]) -> None:
     try:
         comment_on_tag = account['comment_on_media']['comment_on_tag']
         amount_per_day = account['comment_on_media']['amount_per_day']
 
-        posts_to_comment = cl.hashtag_medias_recent(comment_on_tag, amount_per_day)
+        posts_to_comment = media.recent_medias_hashtag_no_auth(comment_on_tag, amount_per_day)
 
         for post in posts_to_comment:
             try:

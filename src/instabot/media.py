@@ -120,3 +120,16 @@ def download_album(cl, post, album_download_path):
         cl.album_download(post.pk, album_download_path)
     except:
         instabot.logger.info(f"Failed to download album for post {post.id}")
+
+def recent_medias_hashtag_no_auth(tag: str, amount: int):
+    client = Client()
+    try:
+        try:
+            posts = client.hashtag_medias_recent_a1(tag, amount)
+        except:
+            posts = client.hashtag_medias_recent_v1(tag, amount)
+
+        return posts
+    except:
+        instabot.logger.info(f"Failed to get recent medias for tag {tag}")
+        return []
