@@ -3,6 +3,8 @@
     {
       "username": "username",
       "password": "password",
+      "request_timeout": 1,
+      "use_proxy": false,
       "follow_users": {
         "enabled": true,
         "follows_per_day": 20,
@@ -26,6 +28,7 @@
       },
       "media_auto_discovery": {
         "enabled": true,
+        "request_timeout": 60,
         "from_tag": "instagram",
         "amount_per_day": 2,
         "save_captions": true,
