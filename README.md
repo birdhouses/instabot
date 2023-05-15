@@ -1,5 +1,5 @@
 # InstaBot
-Follow4follow instagram bot.
+Automate your instagram account management using this bot. Fill in your requirements in the config.json file and run the script! You can configure multiple accounts which will run simutanously.
 
 Please note that using automated scripts to interact with Instagram can be against their terms of service, and your account may be at risk of being temporarily or permanently banned. Use this bot at your own risk.
 
@@ -20,6 +20,7 @@ Please consider donating to support development of the project
 - Using multiple accounts at the same time
 - Proxy support for making requests
 - Automatically download posts from a specified tag, based on user requirements
+- Upload a configured amount of posts each day
 
 ## Proxy configuration
 In the main directory of your Instagram Bot, create a file named proxies.txt. Each line in this file should represent a single proxy in the format IP:Port:Username:Password. For example:
