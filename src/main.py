@@ -1,4 +1,4 @@
-from instabot import utils, follow, comment, media
+from instabot import utils, follow, comment, media, upload
 import asyncio
 from threading import Thread
 from instagrapi import Client
@@ -31,6 +31,11 @@ async def main(account):
                 cl = await utils.get_client(account)
                 media_task = tg.create_task(
                     media.media_auto_discovery(cl, account)
+                )
+            if account['upload_posts']['enabled']:
+                cl = await utils.get_client(account)
+                upload_task = tg.create_task(
+                    upload.upload_media(cl, account)
                 )
 
 def run_account(account):

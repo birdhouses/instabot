@@ -11,6 +11,7 @@ session.json
 /comments
 /src/artifacts/*
 /src/saved_posts/
+/src/scheduled_posts/*
 # C extensions
 *.so
 

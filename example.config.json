@@ -58,6 +58,12 @@
           "min_followers": 1,
           "max_following": 1000
         }
+      },
+      "upload_posts": {
+        "enabled": true,
+        "amount_per_day": 3,
+        "posts_dir": "./scheduled_posts",
+        "caption": "Cool caption.."
       }
     }
   ]
