@@ -64,6 +64,12 @@
         "amount_per_day": 3,
         "posts_dir": "./scheduled_posts",
         "caption": "Cool caption.."
+      },
+      "download_posts_from_account": {
+        "enabled": true,
+        "source_account": "instagram",
+        "amount": 5,
+        "timeout": 2
       }
     }
   ]
