@@ -63,6 +63,7 @@
         "enabled": true,
         "amount_per_day": 3,
         "posts_dir": "./scheduled_posts",
+        "delete_after_upload": true,
         "caption": "Cool caption.."
       },
       "download_posts_from_account": {
