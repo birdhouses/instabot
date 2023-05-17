@@ -26,11 +26,15 @@ async def upload_media(cl, account):
         path_to_post = posts_dir + '/' + path
 
         if os.path.isfile(path_to_post):
-            cl.photo_upload(path_to_post, caption)
             sleep_time = utils.calculate_sleep_time(amount)
             utils.logger.info(f"Sleeping for {sleep_time} seconds before uploading media...")
 
             await asyncio.sleep(sleep_time)
+
+            cl.photo_upload(path_to_post, caption)
+
+            if account['upload_posts']['delete_after_upload']:
+                os.remove(path_to_post)
         else:
             utils.logger.error(f"File {path_to_post} does not exist!")
             return
