@@ -1,4 +1,4 @@
-from instabot import utils, follow, comment, media, upload
+from instabot import utils, follow, comment, media, upload, download
 import asyncio
 from threading import Thread
 from instagrapi import Client
@@ -9,34 +9,38 @@ async def main(account):
 
     utils.logger.info(f'Started process for {username}')
 
-    while True:
-        async with asyncio.TaskGroup() as tg:
-            if account['follow_users']['enabled']:
-                cl = await utils.get_client(account)
-                follow_task = tg.create_task(
-                    follow.follow_user_followers(cl, account)
-                )
-            if account['unfollow_users']['enabled']:
-                cl = await utils.get_client(account)
-                unfollow_task = tg.create_task(
-                    follow.unfollow_users(cl, account)
-                )
-            if account['comment_on_media']['enabled']:
-                cl = await utils.get_client(account)
-                comment_task = tg.create_task(
-                    comment.comment_on_media(cl, account)
-                )
-            if account['media_auto_discovery']['enabled']:
-                # anon_cl = Client(request_timeout=account['media_auto_discovery']['request_timeout'])
-                cl = await utils.get_client(account)
-                media_task = tg.create_task(
-                    media.media_auto_discovery(cl, account)
-                )
-            if account['upload_posts']['enabled']:
-                cl = await utils.get_client(account)
-                upload_task = tg.create_task(
-                    upload.upload_media(cl, account)
-                )
+    async with asyncio.TaskGroup() as tg:
+        if account['follow_users']['enabled']:
+            cl = await utils.get_client(account)
+            follow_task = tg.create_task(
+                follow.follow_user_followers(cl, account)
+            )
+        if account['unfollow_users']['enabled']:
+            cl = await utils.get_client(account)
+            unfollow_task = tg.create_task(
+                follow.unfollow_users(cl, account)
+            )
+        if account['comment_on_media']['enabled']:
+            cl = await utils.get_client(account)
+            comment_task = tg.create_task(
+                comment.comment_on_media(cl, account)
+            )
+        if account['media_auto_discovery']['enabled']:
+            # anon_cl = Client(request_timeout=account['media_auto_discovery']['request_timeout'])
+            cl = await utils.get_client(account)
+            media_task = tg.create_task(
+                media.media_auto_discovery(cl, account)
+            )
+        if account['upload_posts']['enabled']:
+            cl = await utils.get_client(account)
+            upload_task = tg.create_task(
+                upload.upload_media(cl, account)
+            )
+        if account['download_posts_from_account']['enabled']:
+            cl = Client()
+            download_task = tg.create_task(
+                download.download_media(cl, account)
+            )
 
 def run_account(account):
     asyncio.run(main(account))
