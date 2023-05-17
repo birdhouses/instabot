@@ -51,7 +51,7 @@ def load_posts(account: dict) -> List[dict]:
 def filter_posts(posts):
     ## TODO:
     ## implement more post type filtering here
-    valid_images = [".jpg"]
+    valid_images = [".jpg", ".webp", ".png"]
     valid_posts = []
     for post in posts:
         ext = os.path.splitext(post)[1]
