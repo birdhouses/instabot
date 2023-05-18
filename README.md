@@ -47,8 +47,8 @@ Install the required Python packages:
 Create a config.json file with your Instagram account credentials and desired settings (refer to the config.example.json file for an example configuration)
 
 
-# Usage
-## Uploading posts
+# Usage guide
+### Uploading posts
 In order to upload posts you need to specify the source directory of where the files to be posted are stored.
 For example if you want to upload posts from the `/src/posts` folder (you'd need to create the `/posts` folder manually) then specify it as follows in the `config.json` file:
 
@@ -67,7 +67,73 @@ The folder structure for the files to be depends on if you want to upload single
             /image_1.jpg
             /image_2.jpg
 
-Run the script:
+### Downloading posts from a specified instagram account
+To download posts from one instagram account, you need to specify the username of the instagram account in the `config.json` file:
+
+    "download_posts_from_account": {
+          "enabled": false,
+          "source_account": "instagram",
+          "amount": 5,
+          "timeout": 2
+        }
+Make sure the `source_account` is public. You can specify the amount of posts you want to download, and the timeout between each download.
+It should be noted that this task does not use authentication, which means that it is not possible to use proxies for this task. (Because the get_client method handles authentication & proxies properly).
+
+### Media auto discovery
+The media auto discovery feature allows you to automatically discover new posts from a specified tag. You can configure the requirements for a post to be discovered in the `config.json` file. If a post matches the requirements specified, it will be automatically downloaded. Here is an example configuration that will automatically discover posts from the `#memes` tag:
+
+    "media_auto_discovery": {
+          "enabled": true,
+          "from_tag": "memes",
+          "amount_per_day": 50,
+          "save_captions": true,
+          "avoid_duplicates": true,
+          "request_timeout": 5,
+          "post_requirements": {
+            "min_likes": 1,
+            "min_comments": 1,
+            "detect_caption_language": true,
+            "languages": ["en"],
+            "allowed_post_types": [
+              "photo",
+              "video",
+              "igtv",
+              "reel",
+              "album"
+            ]
+          },
+          "author_requirements": {
+            "enabled": true,
+            "biography_keywords": [
+              "memes",
+              "meme",
+              "funny"
+            ],
+            "detect_biography_keywords": true,
+            "detect_biography_language": true,
+            "languages": ["en"],
+            "min_followers": 1,
+            "max_following": 1000
+          }
+        },
+
+This feature might not work properly yet, but it can be useful in cases where you just want to find posts that might be worth downloading. Feel free to disable some settings if you encounter any issues and report them to the community.
+
+### Commenting on posts
+To comment on posts from a specified tag you can use the following settings:
+
+    "comment_on_media": {
+            "enabled": false,
+            "comment_on_tag": "memes",
+            "amount_per_day": 10,
+            "comments": [
+                "Intresting comment",
+                "Intresting comment 2"
+            ]
+            },
+This will automatically comment on 10 posts from a specified tag each day and select a random comment from the list of comments to comment.
+
+###Run the script:
 
     /instabot/src python3.11 main.py
 
