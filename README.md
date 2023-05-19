@@ -134,7 +134,7 @@ To comment on posts from a specified tag you can use the following settings:
             },
 This will automatically comment on 10 posts from a specified tag each day and select a random comment from the list of comments to comment.
 
-###Run the script:
+### Run the script:
 
     /instabot/src python3.11 main.py
 
