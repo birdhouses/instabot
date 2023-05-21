@@ -1,6 +1,5 @@
 # InstaBot
 Automate your instagram account management using this bot. Fill in your requirements in the config.json file and run the script! You can configure multiple accounts which will run simutanously.
-A GUI implementation of the bot is being worked on. This should make it much smoother to work with the bot, so stay tuned for future updates!
 
 Please note that using automated scripts to interact with Instagram can be against their terms of service, and your account may be at risk of being temporarily or permanently banned. Use this bot at your own risk.
 
