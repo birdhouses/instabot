@@ -1,14 +1,16 @@
 import customtkinter
 from gui.account_config import AccountConfigFrame
+from gui.utils import create_gui_window
 
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Account config")
-        self.geometry("1920x1080")
-        self.grid_columnconfigure((0, 1), weight=1)
-        self.grid_rowconfigure(0, weight=0)
+        # TODO: load theme from path with relative path
+        # This code doesn't work yet because you need to provide absolute path to theme file
+        # theme_path = '/instabot/src/gui/themes/main_theme.json'
+        theme_path = None
+        create_gui_window(self, theme_path=theme_path)
 
         self.account_config_frame = AccountConfigFrame(self, frame_title='account details', fields={
             'username': 'entry',
@@ -16,7 +18,7 @@ class App(customtkinter.CTk):
         })
         self.account_config_frame.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="ew")
 
-        self.use_proxies_frame = AccountConfigFrame(self, frame_title='follow users', fields={
+        self.use_proxies_frame = AccountConfigFrame(self, frame_title='proxies', fields={
             'use proxies': 'checkbox',
         })
         self.use_proxies_frame.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="ew")
@@ -26,7 +28,7 @@ class App(customtkinter.CTk):
             'amount per day': 'entry',
             'from account': 'entry',
             'like posts after following': 'checkbox',
-            'like count': 'entry'
+            'amount to like': 'entry'
         })
         self.follow_users_frame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="ew")
 

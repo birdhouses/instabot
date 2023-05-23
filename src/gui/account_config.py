@@ -19,16 +19,17 @@ class AccountConfigFrame(customtkinter.CTkFrame):
                 i = i + 1
                 if field_type == 'entry':
                     entry_label = customtkinter.CTkLabel(self, text=key)
-                    entry_label.grid(row=i, column=0, sticky='w')
+                    entry_label.grid(row=i, column=0, padx=10, pady=(10, 0), sticky='w')
 
                     entry = customtkinter.CTkEntry(self)
-                    entry.grid(row=i, column=1, sticky='w')
+                    entry.grid(row=i, column=1, padx=10, pady=(10, 0), sticky='ew')
                     self.inputs.append(entry)
                 elif field_type == 'checkbox':
                     checkbox_label = customtkinter.CTkLabel(self, text=key)
-                    checkbox_label.grid(row=i, column=0, sticky='w')
+                    checkbox_label.grid(row=i, column=0, padx=10, pady=(10, 0), sticky='w')
+
                     checkbox = customtkinter.CTkCheckBox(self, text="")
-                    checkbox.grid(row=i, column=1, sticky='w')
+                    checkbox.grid(row=i, column=1, padx=10, pady=(10, 0), sticky='w')
                     self.inputs.append(checkbox)
 
     def get(self):
