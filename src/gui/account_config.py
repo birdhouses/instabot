@@ -31,6 +31,13 @@ class AccountConfigFrame(customtkinter.CTkFrame):
                     checkbox = customtkinter.CTkCheckBox(self, text="")
                     checkbox.grid(row=i, column=1, padx=10, pady=(10, 0), sticky='w')
                     self.inputs.append(checkbox)
+                elif field_type == 'textbox':
+                    textbox_label = customtkinter.CTkLabel(self, text=key)
+                    textbox_label.grid(row=i, column=0, padx=10, pady=(10, 0), sticky='w')
+
+                    textbox = customtkinter.CTkTextbox(self)
+                    textbox.grid(row=i, column=1, padx=10, pady=(10, 0), sticky='ew')
+                    self.inputs.append(textbox)
 
     def get(self):
         input_data = []
