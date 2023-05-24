@@ -1,15 +1,13 @@
 import customtkinter
 from gui.account_config import AccountConfigFrame
 from gui import utils
+import os
 
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
-        # TODO: load theme from path with relative path
-        # This code doesn't work yet because you need to provide absolute path to theme file
-        # theme_path = '/instabot/src/gui/themes/main_theme.json'
-        theme_path = None
+        theme_path = os.path.abspath('./gui/themes/main_theme.json')
         utils.create_gui_window(self, theme_path=theme_path)
 
         self.account_config_frame = AccountConfigFrame(self, frame_title='account details', fields={
