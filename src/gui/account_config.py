@@ -14,38 +14,37 @@ class AccountConfigFrame(customtkinter.CTkFrame):
         self.inputs.append(frame_title_label)
 
         if self.fields is not None:
-            for i, (key, field_type) in enumerate(self.fields.items()):
+            for i, (label, field_type, field_key) in enumerate(self.fields):
                 # frame title is on row 0, add 1 to row
                 i = i + 1
                 if field_type == 'entry':
-                    entry_label = customtkinter.CTkLabel(self, text=key)
-                    entry_label.grid(row=i, column=0, padx=10, pady=(10, 0), sticky='w')
-
-                    entry = customtkinter.CTkEntry(self)
-                    entry.grid(row=i, column=1, padx=10, pady=(10, 0), sticky='ew')
-                    self.inputs.append(entry)
+                    self.create_entry(self, i, label, field_key)
                 elif field_type == 'checkbox':
-                    checkbox_label = customtkinter.CTkLabel(self, text=key)
-                    checkbox_label.grid(row=i, column=0, padx=10, pady=(10, 0), sticky='w')
+                    self.create_checkbox(self, i, label, field_key)
 
-                    checkbox = customtkinter.CTkCheckBox(self, text="")
-                    checkbox.grid(row=i, column=1, padx=10, pady=(10, 0), sticky='w')
-                    self.inputs.append(checkbox)
-                elif field_type == 'textbox':
-                    textbox_label = customtkinter.CTkLabel(self, text=key)
-                    textbox_label.grid(row=i, column=0, padx=10, pady=(10, 0), sticky='w')
+    def create_entry(self, sus, row, label, field_key):
+        entry_label = customtkinter.CTkLabel(self, text=label)
+        entry_label.grid(row=row, column=0, padx=10, pady=(10, 0), sticky='w')
 
-                    textbox = customtkinter.CTkTextbox(self)
-                    textbox.grid(row=i, column=1, padx=10, pady=(10, 0), sticky='ew')
-                    self.inputs.append(textbox)
+        entry = customtkinter.CTkEntry(self)
+        entry.grid(row=row, column=1, padx=10, pady=(10, 0), sticky='ew')
+        self.inputs.append([field_key, entry])
+
+    def create_checkbox(self, sus, row, label, field_key):
+        checkbox_label = customtkinter.CTkLabel(self, text=label)
+        checkbox_label.grid(row=row, column=0, padx=10, pady=(10, 0), sticky='w')
+
+        checkbox = customtkinter.CTkCheckBox(self, text="")
+        checkbox.grid(row=row, column=1, padx=10, pady=(10, 0), sticky='w')
+        self.inputs.append([field_key, checkbox])
 
     def get(self):
         input_data = []
 
         if self.fields is not None:
-            for i, (key, field_type) in enumerate(self.fields.items()):
+            for i, (key) in enumerate(self.fields):
                 # frame title is on row 0, add 1 to row
                 i = i + 1
-                input_data.append([key, self.inputs[i].get()])
+                input_data.append([key[2], self.inputs[i][1].get()])
 
         return input_data
