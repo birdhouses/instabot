@@ -8,6 +8,7 @@ class App(customtkinter.CTk):
         super().__init__()
 
         theme_path = os.path.abspath('./gui/themes/main_theme.json')
+
         utils.create_gui_window(self, theme_path=theme_path)
 
         self.account_config_frame = AccountConfigFrame(self, frame_title='account details', fields={
@@ -40,9 +41,18 @@ class App(customtkinter.CTk):
             'enabled': 'checkbox',
             'comment on tag': 'entry',
             'amount per day': 'entry',
-            'comments': 'textbox'
+            'comments': 'entry'
         })
         self.comment_on_posts_frame.grid(row=4, column=0, padx=10, pady=(10, 0), sticky="ew")
+
+        self.media_auto_discovery_frame = AccountConfigFrame(self, frame_title='media auto discovery', fields={
+            'enabled': 'checkbox',
+            'from tag': 'entry',
+            'amount per day': 'entry',
+            'save captions': 'checkbox',
+            'request timeout': 'entry'
+        })
+        self.media_auto_discovery_frame.grid(row=5, column=0, padx=10, pady=(10, 0), sticky="ew")
 
         self.button = customtkinter.CTkButton(self, text="show config", command=self.show_configured_data)
         self.button.grid(row=5, column=0, padx=10, pady=10, sticky="ew", columnspan=2)

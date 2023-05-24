@@ -23,8 +23,7 @@ def collect_configured_data(self):
         unfollow_users = self.unfollow_users_frame.get()
         data.append(['unfollow_users', unfollow_users])
 
-        return data
+        comment_on_posts = self.comment_on_posts_frame.get()
+        data.append(['comment_on_posts', comment_on_posts])
 
-def show_configured_data(self):
-        data = collect_configured_data(self)
-        print(data)
+        return data
