@@ -1,12 +1,23 @@
 import customtkinter
 
-def create_gui_window(self: customtkinter.CTk, theme_path = None):
+def create_gui_window(self: customtkinter.CTk,
+                      theme_path: str = None,
+                      title: str = None,
+                      geometry: str = None,
+                      column_count: int = 0,
+                      row_count: int = 0,
+                      column_weight: int = 0,
+                      row_weight: int = 0,
+                      ) -> None:
     if theme_path is not None:
         customtkinter.set_default_color_theme(theme_path)
-    self.title("Account config")
-    self.geometry("1920x1080")
-    self.grid_columnconfigure(0, weight=1)
-    self.grid_rowconfigure(0, weight=0)
+    if title is not None:
+        self.title(title)
+    if geometry is not None:
+        self.geometry(geometry)
+
+    self.grid_columnconfigure(column_count, weight=column_weight)
+    self.grid_rowconfigure(row_count, weight=row_weight)
 
 def collect_configured_data(self):
         data = []

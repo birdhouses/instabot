@@ -3,21 +3,31 @@ from gui.account_config import AccountConfigFrame
 from gui import utils
 import os
 
+class ScrollableFrame(customtkinter.CTkScrollableFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
         theme_path = os.path.abspath('./gui/themes/main_theme.json')
 
-        utils.create_gui_window(self, theme_path=theme_path)
+        utils.create_gui_window(self,
+                                theme_path=theme_path,
+                                title='Account configurator',
+                                geometry='1920x1080',
+                                column_weight=1
+                                )
+        scrollable_frame = customtkinter.CTkScrollableFrame(self)
 
-        self.account_config_frame = AccountConfigFrame(self, frame_title='account details', fields={
+        self.account_config_frame = AccountConfigFrame(scrollable_frame, frame_title='account details', fields={
             ('username', 'entry', 'username'),
             ('password', 'entry', 'password')
         })
         self.account_config_frame.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="ew")
 
-        self.use_proxies_frame = AccountConfigFrame(self, frame_title='proxies', fields={
+        self.use_proxies_frame = AccountConfigFrame(scrollable_frame, frame_title='proxies', fields={
             ('use proxies', 'checkbox', 'use_proxy'),
         })
         self.use_proxies_frame.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="ew")
