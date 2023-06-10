@@ -89,13 +89,14 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
 
     def show_configured_data(self):
         data = utils.collect_configured_data(self)
+        utils.write_to_config(data)
         print(data)
 
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
-        self.attributes('-zoomed', True)
+        # self.attributes('-zoomed', True)
 
         theme_path = os.path.abspath('./gui/themes/main_theme.json')
         utils.create_gui_window(self,

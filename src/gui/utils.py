@@ -1,4 +1,5 @@
 import customtkinter
+import json
 
 def create_gui_window(self: customtkinter.CTk,
                       theme_path: str = None,
@@ -47,3 +48,12 @@ def collect_configured_data(self):
         data.append(['download_posts_from_account', download_posts])
 
         return data
+
+def write_to_config(data: list) -> None:
+    ##TODO: write to config file
+    # Refactor data to be the same format as in the current config file
+    # Show warning message
+    # On confirm write to config file
+
+    with open('test.json', 'w') as f:
+        json.dump(data, f)
