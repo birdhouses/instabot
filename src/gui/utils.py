@@ -37,4 +37,13 @@ def collect_configured_data(self):
         comment_on_posts = self.comment_on_posts_frame.get()
         data.append(['comment_on_posts', comment_on_posts])
 
+        media_auto_discovery = self.media_auto_discovery_frame.get()
+        data.append(['media_auto_discovery', media_auto_discovery])
+
+        upload_posts = self.upload_posts_frame.get()
+        data.append(['upload_posts', upload_posts])
+
+        download_posts = self.download_posts_from_account_frame.get()
+        data.append(['download_posts_from_account', download_posts])
+
         return data

@@ -10,7 +10,10 @@ class AccountConfigFrame(customtkinter.CTkFrame):
 
         # Append frame title to inputs list
         frame_title_label = customtkinter.CTkLabel(self, text=self.frame_title)
-        frame_title_label.grid(row=0, column=0, sticky="ew")
+        frame_title_label.grid(row=0, column=0, sticky="w", pady=(10, 0))
+        frame_title_label.configure(
+            font=("Roboto", 50)
+            )
         self.inputs.append(frame_title_label)
 
         if self.fields is not None:
