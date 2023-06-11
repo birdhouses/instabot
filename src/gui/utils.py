@@ -54,6 +54,18 @@ def write_to_config(data: list) -> None:
     # Refactor data to be the same format as in the current config file
     # Show warning message
     # On confirm write to config file
+    formatted_data = format_data(data)
 
     with open('test.json', 'w') as f:
-        json.dump(data, f)
+        f.write(formatted_data)
+
+def format_data(data: list) -> list:
+    formatted_data = {}
+    for item in data:
+        for key, value in item[1]:
+            if formatted_data.get(item[0]) is None:
+                formatted_data[item[0]] = {}
+
+            formatted_data[item[0]] |= {key: value}
+
+    return json.dumps(formatted_data)
