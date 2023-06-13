@@ -64,6 +64,8 @@ class AccountConfigFrame(customtkinter.CTkFrame):
             self.create_entry(self, row_index, label, field_key)
         elif field_type == 'checkbox':
             self.create_checkbox(self, row_index, label, field_key)
+        elif field_type == 'textarea':
+            self.create_textarea(row_index, label, field_key)
 
     def create_entry(self, sus, row, label, field_key):
         entry_label = customtkinter.CTkLabel(self, text=label)
@@ -81,26 +83,45 @@ class AccountConfigFrame(customtkinter.CTkFrame):
         checkbox.grid(row=row, column=1, padx=10, pady=(10, 0), sticky='w')
         self.inputs.append([field_key, checkbox])
 
+    def create_textarea(self, row, label, field_key):
+        textarea_label = customtkinter.CTkLabel(self, text=label)
+        textarea_label.grid(row=row, column=0, padx=10, pady=(10, 0), sticky='w')
+
+        textarea = customtkinter.CTkTextbox(self, height=5, width=30)
+        textarea.grid(row=row, column=1, padx=10, pady=(10, 0), sticky='ew')
+        self.inputs.append([field_key, textarea])
+
+
     def get(self):
-        input_data = []
+        input_data = {}
 
         if self.fields is not None:
             field_idx = 0
             while field_idx < len(self.fields):
                 field = self.fields[field_idx]
                 if isinstance(field, tuple):
-                    input_data.append([field[2], self.inputs[field_idx][1].get()])
+                    value = self.inputs[field_idx][1].get() if field[1] != 'textarea' else self.inputs[field_idx][1].get('1.0', 'end')
+                    if field[1] == 'checkbox':
+                        value = True if value == '1' else False
+                    elif field[1] == 'entry':
+                        value = int(value) if value.isdigit() else value
+                    elif field[1] == 'textarea':
+                        value = [line.strip() for line in value.split('\n') if line.strip()]
+                    input_data[field[2]] = value
                     field_idx += 1
                 elif isinstance(field, list):
                     nested_fields = field[1:]
-                    nested_data = []
+                    nested_data = {}
                     for nested_field in nested_fields:
-                        nested_data.append([nested_field[2], self.inputs[field_idx][1].get()])
+                        value = self.inputs[field_idx][1].get() if nested_field[1] != 'textarea' else self.inputs[field_idx][1].get('1.0', 'end')
+                        if nested_field[1] == 'checkbox':
+                            value = True if value == '1' else False
+                        elif nested_field[1] == 'entry':
+                            value = int(value) if value.isdigit() else value
+                        elif nested_field[1] == 'textarea':
+                            value = [line.strip() for line in value.split('\n') if line.strip()]
+                        nested_data[nested_field[2]] = value
                         field_idx += 1
-                    input_data.append([field[0], nested_data])
+                    input_data[field[0]] = nested_data
 
         return input_data
-
-
-
-

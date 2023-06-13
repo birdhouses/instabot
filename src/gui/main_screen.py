@@ -2,6 +2,7 @@ import customtkinter
 from gui.account_config import AccountConfigFrame
 from gui.utils import ConfigManager
 import os
+import json
 
 class ScrollableFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
@@ -26,12 +27,10 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             ('enabled', 'checkbox', 'enabled'),
             ('amount per day', 'entry', 'follows_per_day'),
             ('from account', 'entry', 'source_account'),
-            ('like posts after following', 'checkbox', 'like_recent_posts'),
-            ('amount to like', 'entry', 'like_count'),
             [
                 'engagement',
-                ('nested field', 'entry', 'cool'),
-                ('nested field 2', 'entry', 'nested_field_2')
+                ('like posts after following', 'checkbox', 'like_recent_posts'),
+                ('amount to like', 'entry', 'like_count'),
             ]
         ])
         self.follow_users_frame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="ew")
@@ -46,7 +45,7 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             ('enabled', 'checkbox', 'enabled'),
             ('comment on tag', 'entry', 'comment_on_tag'),
             ('amount per day', 'entry', 'amount_per_day'),
-            ('comments', 'entry', 'comments')
+            ('comments', 'textarea', 'comments')
         ])
         self.comment_on_posts_frame.grid(row=4, column=0, padx=10, pady=(10, 0), sticky="ew")
 
