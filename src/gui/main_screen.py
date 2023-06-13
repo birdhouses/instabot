@@ -1,11 +1,12 @@
 import customtkinter
 from gui.account_config import AccountConfigFrame
-from gui import utils
+from gui.utils import ConfigManager
 import os
 
 class ScrollableFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
+        self.gui = self
 
         self.account_config_frame = AccountConfigFrame(self, frame_title='account details', fields=[
             ('username', 'entry', 'username'),
@@ -18,12 +19,20 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
         ])
         self.use_proxies_frame.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="ew")
 
-        self.follow_users_frame = AccountConfigFrame(self, frame_title='follow users', fields=[
+        self.follow_users_frame = AccountConfigFrame(
+            self,
+            frame_title='follow users',
+            fields=[
             ('enabled', 'checkbox', 'enabled'),
             ('amount per day', 'entry', 'follows_per_day'),
             ('from account', 'entry', 'source_account'),
             ('like posts after following', 'checkbox', 'like_recent_posts'),
-            ('amount to like', 'entry', 'like_count')
+            ('amount to like', 'entry', 'like_count'),
+            [
+                'engagement',
+                ('nested field', 'entry', 'cool'),
+                ('nested field 2', 'entry', 'nested_field_2')
+            ]
         ])
         self.follow_users_frame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="ew")
 
@@ -88,8 +97,9 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
         self.button.grid(row=8, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
 
     def show_configured_data(self):
-        data = utils.collect_configured_data(self)
-        utils.write_to_config(data)
+        config_manager = ConfigManager(self.gui)
+        data = config_manager.collect_configured_data()
+        config_manager.write_to_config(data)
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -98,7 +108,7 @@ class App(customtkinter.CTk):
         # self.attributes('-zoomed', True)
 
         theme_path = os.path.abspath('./gui/themes/main_theme.json')
-        utils.create_gui_window(self,
+        ConfigManager.create_gui_window(self,
                                 theme_path=theme_path,
                                 title='Account configurator',
                                 geometry='1920x1080',
@@ -111,4 +121,4 @@ class App(customtkinter.CTk):
         self.mainloop()
 
     def show_configured_data(self):
-        data = utils.collect_configured_data(self)
+        data = ConfigManager.collect_configured_data(self)

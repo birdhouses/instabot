@@ -14,16 +14,56 @@ class AccountConfigFrame(customtkinter.CTkFrame):
         frame_title_label.configure(
             font=("Roboto", 50)
             )
-        self.inputs.append(frame_title_label)
+        # self.inputs.append(frame_title_label)
 
         if self.fields is not None:
-            for i, (label, field_type, field_key) in enumerate(self.fields):
-                # frame title is on row 0, add 1 to row
-                i = i + 1
-                if field_type == 'entry':
-                    self.create_entry(self, i, label, field_key)
-                elif field_type == 'checkbox':
-                    self.create_checkbox(self, i, label, field_key)
+            for row_index, (field) in enumerate(self.fields):
+                if type(field) == tuple:
+                    row_index = row_index + 1
+                    self.add_field(field, row_index)
+                elif type(field) == list:
+                    row_index = row_index + 1
+                    self.add_nested_fields(field, row_index)
+
+            # for i, (label, field_type, field_key) in enumerate(self.fields):
+            #     # frame title is on row 0, add 1 to row
+            #     i = i + 1
+            #     if field_type == 'entry':
+            #         self.create_entry(self, i, label, field_key)
+            #     elif field_type == 'checkbox':
+            #         self.create_checkbox(self, i, label, field_key)
+
+    def add_nested_fields(self, fields, row_index):
+        nested_fields_title = customtkinter.CTkLabel(self, text=fields[0])
+        nested_fields_title.grid(row=row_index, column=0, sticky="w", pady=(10, 0))
+        nested_fields_title.configure(
+            font=("Roboto", 30)
+            )
+
+        for field in fields:
+            row_index = row_index + 1
+            parent_field = fields[0]
+            self.add_nested_field(field, row_index, parent_field)
+
+    def add_nested_field(self, field, row_index, parent_field):
+        label = field[0]
+        field_type = field[1]
+        field_key = [parent_field, field[2]]
+
+        if field_type == 'entry':
+            self.create_entry(self, row_index, label, field_key)
+        elif field_type == 'checkbox':
+            self.create_checkbox(self, row_index, label, field_key)
+
+    def add_field(self, field, row_index):
+        label = field[0]
+        field_type = field[1]
+        field_key = field[2]
+
+        if field_type == 'entry':
+            self.create_entry(self, row_index, label, field_key)
+        elif field_type == 'checkbox':
+            self.create_checkbox(self, row_index, label, field_key)
 
     def create_entry(self, sus, row, label, field_key):
         entry_label = customtkinter.CTkLabel(self, text=label)
@@ -45,9 +85,22 @@ class AccountConfigFrame(customtkinter.CTkFrame):
         input_data = []
 
         if self.fields is not None:
-            for i, (key) in enumerate(self.fields):
-                # frame title is on row 0, add 1 to row
-                i = i + 1
-                input_data.append([key[2], self.inputs[i][1].get()])
+            field_idx = 0
+            while field_idx < len(self.fields):
+                field = self.fields[field_idx]
+                if isinstance(field, tuple):
+                    input_data.append([field[2], self.inputs[field_idx][1].get()])
+                    field_idx += 1
+                elif isinstance(field, list):
+                    nested_fields = field[1:]
+                    nested_data = []
+                    for nested_field in nested_fields:
+                        nested_data.append([nested_field[2], self.inputs[field_idx][1].get()])
+                        field_idx += 1
+                    input_data.append([field[0], nested_data])
 
         return input_data
+
+
+
+

@@ -1,71 +1,85 @@
-import customtkinter
 import json
+import customtkinter
 
-def create_gui_window(self: customtkinter.CTk,
-                      theme_path: str = None,
-                      title: str = None,
-                      geometry: str = None,
-                      column_count: int = 0,
-                      row_count: int = 0,
-                      column_weight: int = 0,
-                      row_weight: int = 0,
-                      ) -> None:
-    if theme_path is not None:
-        customtkinter.set_default_color_theme(theme_path)
-    if title is not None:
-        self.title(title)
-    if geometry is not None:
-        self.geometry(geometry)
+class ConfigManager:
+    def __init__(self, gui):
+        self.gui = gui
 
-    self.grid_columnconfigure(column_count, weight=column_weight)
-    self.grid_rowconfigure(row_count, weight=row_weight)
+    @staticmethod
+    def create_gui_window(gui_instance, theme_path=None, title=None, geometry=None, column_count=0, row_count=0, column_weight=0, row_weight=0):
+        if theme_path is not None:
+            customtkinter.set_default_color_theme(theme_path)
+        if title is not None:
+            gui_instance.title(title)
+        if geometry is not None:
+            gui_instance.geometry(geometry)
 
-def collect_configured_data(self):
+        gui_instance.grid_columnconfigure(column_count, weight=column_weight)
+        gui_instance.grid_rowconfigure(row_count, weight=row_weight)
+
+    def collect_configured_data(self):
         data = []
-
-        account_details = self.account_config_frame.get()
-        data.append(['account_details', account_details])
-
-        use_proxies = self.use_proxies_frame.get()
-        data.append(['use_proxies', use_proxies])
-
-        follow_users = self.follow_users_frame.get()
-        data.append(['follow_users', follow_users])
-
-        unfollow_users = self.unfollow_users_frame.get()
-        data.append(['unfollow_users', unfollow_users])
-
-        comment_on_posts = self.comment_on_posts_frame.get()
-        data.append(['comment_on_posts', comment_on_posts])
-
-        media_auto_discovery = self.media_auto_discovery_frame.get()
-        data.append(['media_auto_discovery', media_auto_discovery])
-
-        upload_posts = self.upload_posts_frame.get()
-        data.append(['upload_posts', upload_posts])
-
-        download_posts = self.download_posts_from_account_frame.get()
-        data.append(['download_posts_from_account', download_posts])
-
+        frames = [
+            'account_config_frame',
+            'use_proxies_frame',
+            'follow_users_frame',
+            'unfollow_users_frame',
+            'comment_on_posts_frame',
+            'media_auto_discovery_frame',
+            'upload_posts_frame',
+            'download_posts_from_account_frame'
+        ]
+        for frame in frames:
+            frame_data = getattr(self.gui, frame).get()
+            data.append([frame.replace('_frame', ''), frame_data])
         return data
 
-def write_to_config(data: list) -> None:
-    ##TODO: write to config file
-    # Refactor data to be the same format as in the current config file
-    # Show warning message
-    # On confirm write to config file
-    formatted_data = format_data(data)
+    def write_to_config(self, data, filename='test.json'):
+        new_account = self.format_data(data)
+        try:
+            with open(filename, 'r+') as f:
+                config = json.load(f)
+                config['accounts'].append(new_account)
+                f.seek(0)
+                f.write(json.dumps(config, indent=4))
+                f.truncate()
+        except FileNotFoundError:
+            with open(filename, 'w+') as f:
+                config = {'accounts': [new_account]}
+                f.write(json.dumps(config, indent=4))
 
-    with open('test.json', 'w') as f:
-        f.write(formatted_data)
+    def format_data(self, data: list) -> str:
+        formatted_data = {}
 
-def format_data(data: list) -> list:
-    formatted_data = {}
-    for item in data:
-        for key, value in item[1]:
-            if formatted_data.get(item[0]) is None:
-                formatted_data[item[0]] = {}
+        for item in data:
+            key = item[0]
+            value = item[1]
 
-            formatted_data[item[0]] |= {key: value}
+            if isinstance(value, list):  # Handle nested fields
+                nested_dict = {}
+                for nested_item in value:
+                    nested_key = nested_item[0]
+                    nested_value = nested_item[1]
 
-    return json.dumps(formatted_data)
+                    # Check if the value is another nested list
+                    if isinstance(nested_value, list):
+                        nested_value = {i[0]: convert_value(i[1]) for i in nested_value}
+
+                    nested_dict[nested_key] = convert_value(nested_value)
+
+                formatted_data[key] = nested_dict
+            else:
+                formatted_data[key] = convert_value(value)
+
+        return formatted_data
+
+def convert_value(value):
+    # Convert the string values to their appropriate types
+    if isinstance(value, str):
+        if value.isdigit():
+            value = int(value)
+        elif value.lower() == 'true':
+            value = True
+        elif value.lower() == 'false':
+            value = False
+    return value
