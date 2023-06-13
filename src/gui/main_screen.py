@@ -45,7 +45,7 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             ('enabled', 'checkbox', 'enabled'),
             ('comment on tag', 'entry', 'comment_on_tag'),
             ('amount per day', 'entry', 'amount_per_day'),
-            ('comments', 'textarea', 'comments')
+            ('comments (seperated by newline)', 'textarea', 'comments')
         ])
         self.comment_on_posts_frame.grid(row=4, column=0, padx=10, pady=(10, 0), sticky="ew")
 
@@ -56,19 +56,24 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             ('save captions', 'checkbox', 'save_captions'),
             ('avoid duplicates', 'checkbox', 'avoid_duplicates'),
             ('request timeout', 'entry', 'request_timeout'),
-            ('post requirements', 'checkbox', 'post_requirements_enabled'),
-            ('min likes', 'entry', 'post_min_likes'),
-            ('min comments', 'entry', 'post_min_comments'),
-            ('detect caption language', 'checkbox', 'post_detect_caption_language'),
-            ('caption languages (separeted by comma: en, nl, etc.)', 'entry', 'post_caption_languages'),
-            ('post types (seperated by comma (photo, video, reel, igtv, album))', 'entry', 'post_types'),
-            ('autor requirements', 'checkbox', 'post_autor_requirements_enabled'),
-            ('biography keywords (seperated by comma: word1, word2)', 'entry', 'post_biography_keywords'),
-            ('detect biography keywords', 'checkbox', 'post_detect_biography_keywords'),
-            ('detect biography language', 'checkbox', 'post_detect_biography_language'),
-            ('biography languages (separeted by comma: en, nl, etc.)', 'entry', 'post_biography_languages'),
-            ('min followers', 'entry', 'post_min_followers'),
-            ('max following', 'entry', 'post_max_following')
+            [
+                'post_requirements',
+                ('min likes', 'entry', 'min_likes'),
+                ('min comments', 'entry', 'min_comments'),
+                ('detect caption language', 'checkbox', 'detect_caption_language'),
+                ('caption languages (separeted by newline', 'textarea', 'languages'),
+                ('post types (seperated by newline)', 'textarea', 'allowed_post_types'),
+            ]
+            # [
+            #     'autor requirements',
+            #     ('enabled', 'checkbox', 'enabled'),
+            #     ('biography keywords (seperated by newline)', 'textarea', 'biography_keywords'),
+            #     ('detect biography keywords', 'checkbox', 'detect_biography_keywords'),
+            #     ('detect biography language', 'checkbox', 'detect_biography_language'),
+            #     ('biography languages (separeted by newline)', 'textarea', 'languages'),
+            #     ('min followers', 'entry', 'min_followers'),
+            #     ('max following', 'entry', 'max_following')
+            # ]
         ])
         self.media_auto_discovery_frame.grid(row=5, column=0, padx=10, pady=(10, 0), sticky="ew")
 

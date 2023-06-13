@@ -54,6 +54,8 @@ class AccountConfigFrame(customtkinter.CTkFrame):
             self.create_entry(self, row_index, label, field_key)
         elif field_type == 'checkbox':
             self.create_checkbox(self, row_index, label, field_key)
+        elif field_type == 'textarea':
+            self.create_textarea(row_index, label, field_key)
 
     def add_field(self, field, row_index):
         label = field[0]
