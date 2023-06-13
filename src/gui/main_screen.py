@@ -64,6 +64,7 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
                 ('caption languages (separeted by newline', 'textarea', 'languages'),
                 ('post types (seperated by newline)', 'textarea', 'allowed_post_types'),
             ]
+            # TODO: Fix multiple nested attributes in the same frame
             # [
             #     'autor requirements',
             #     ('enabled', 'checkbox', 'enabled'),
