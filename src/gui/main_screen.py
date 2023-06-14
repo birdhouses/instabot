@@ -9,11 +9,11 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
         super().__init__(master, **kwargs)
         self.gui = self
 
-        self.account_config_frame = AccountConfigFrame(self, frame_title='account details', fields=[
+        self.account_details_frame = AccountConfigFrame(self, frame_title='account details', fields=[
             ('username', 'entry', 'username'),
             ('password', 'entry', 'password')
         ])
-        self.account_config_frame.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="ew")
+        self.account_details_frame.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="ew")
 
         self.use_proxies_frame = AccountConfigFrame(self, frame_title='proxies', fields=[
             ('use proxies', 'checkbox', 'use_proxy'),

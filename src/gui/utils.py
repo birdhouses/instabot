@@ -20,7 +20,7 @@ class ConfigManager:
     def collect_configured_data(self):
         data = []
         frames = [
-            'account_config_frame',
+            'account_details_frame',
             'use_proxies_frame',
             'follow_users_frame',
             'unfollow_users_frame',
