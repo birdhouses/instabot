@@ -4,8 +4,7 @@ from threading import Thread
 from instagrapi import Client
 
 async def main(account):
-    username = account['username']
-    password = account['password']
+    username = account['account_details']['username']
 
     utils.logger.info(f'Started process for {username}')
 

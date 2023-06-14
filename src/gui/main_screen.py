@@ -41,13 +41,13 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
         ])
         self.unfollow_users_frame.grid(row=3, column=0, padx=10, pady=(10, 0), sticky="ew")
 
-        self.comment_on_posts_frame = AccountConfigFrame(self, frame_title='comment on posts', fields=[
+        self.comment_on_media_frame = AccountConfigFrame(self, frame_title='comment on media', fields=[
             ('enabled', 'checkbox', 'enabled'),
             ('comment on tag', 'entry', 'comment_on_tag'),
             ('amount per day', 'entry', 'amount_per_day'),
             ('comments (seperated by newline)', 'textarea', 'comments')
         ])
-        self.comment_on_posts_frame.grid(row=4, column=0, padx=10, pady=(10, 0), sticky="ew")
+        self.comment_on_media_frame.grid(row=4, column=0, padx=10, pady=(10, 0), sticky="ew")
 
         self.media_auto_discovery_frame = AccountConfigFrame(self, frame_title='media auto discovery', fields=[
             ('enabled', 'checkbox', 'enabled'),
@@ -82,7 +82,7 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             ('amount per day', 'entry', 'amount_per_day'),
             ('posts_dir', 'entry', 'posts_dir'),
             ('delete file after upload', 'checkbox', 'delete_after_upload'),
-            ('caption (multiple captions not supported yet)', 'entry', 'caption')
+            ('caption (seperated by newline)', 'textarea', 'caption')
         ])
         self.upload_posts_frame.grid(row=6, column=0, padx=10, pady=(10, 0), sticky="ew")
 
@@ -97,7 +97,7 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
         ])
         self.download_posts_from_account_frame.grid(row=7, column=0, padx=10, pady=(10, 0), sticky="ew")
 
-        self.button = customtkinter.CTkButton(self, text="show config", command=self.show_configured_data)
+        self.button = customtkinter.CTkButton(self, text="Add account", command=self.show_configured_data)
         self.button.grid(row=8, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
 
     def show_configured_data(self):
@@ -116,7 +116,7 @@ class App(customtkinter.CTk):
                                 theme_path=theme_path,
                                 title='Account configurator',
                                 geometry='1920x1080',
-                                column_weight=1
+                                column_weight=0
                                 )
         self.scrollable_frame = ScrollableFrame(self, width=1920, height=1080)
         self.scrollable_frame.grid(row=0, column=0, padx=10, pady=(10,0))

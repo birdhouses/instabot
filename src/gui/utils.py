@@ -24,7 +24,7 @@ class ConfigManager:
             'use_proxies_frame',
             'follow_users_frame',
             'unfollow_users_frame',
-            'comment_on_posts_frame',
+            'comment_on_media_frame',
             'media_auto_discovery_frame',
             'upload_posts_frame',
             'download_posts_from_account_frame'

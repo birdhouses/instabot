@@ -67,7 +67,7 @@ class AccountConfigFrame(customtkinter.CTkFrame):
         entry_label = customtkinter.CTkLabel(self, text=label)
         entry_label.grid(row=row, column=0, padx=10, pady=(10, 0), sticky='w')
 
-        entry = customtkinter.CTkEntry(self)
+        entry = customtkinter.CTkEntry(self, width=400)
         entry.grid(row=row, column=1, padx=10, pady=(10, 0), sticky='ew')
         self.inputs.append([field_key, entry])
 
@@ -75,7 +75,7 @@ class AccountConfigFrame(customtkinter.CTkFrame):
         checkbox_label = customtkinter.CTkLabel(self, text=label)
         checkbox_label.grid(row=row, column=0, padx=10, pady=(10, 0), sticky='w')
 
-        checkbox = customtkinter.CTkCheckBox(self, text="")
+        checkbox = customtkinter.CTkCheckBox(self, text="", width=400)
         checkbox.grid(row=row, column=1, padx=10, pady=(10, 0), sticky='w')
         self.inputs.append([field_key, checkbox])
 
@@ -83,7 +83,7 @@ class AccountConfigFrame(customtkinter.CTkFrame):
         textarea_label = customtkinter.CTkLabel(self, text=label)
         textarea_label.grid(row=row, column=0, padx=10, pady=(10, 0), sticky='w')
 
-        textarea = customtkinter.CTkTextbox(self, height=5, width=30)
+        textarea = customtkinter.CTkTextbox(self, height=100, width=600)
         textarea.grid(row=row, column=1, padx=10, pady=(10, 0), sticky='ew')
         self.inputs.append([field_key, textarea])
 

@@ -109,9 +109,9 @@ def login_and_save_session(client, username, password, session_file_path):
     logger.info("Session saved to file")
 
 async def get_client(account) -> Union[Client, None]:
-    username = account['username']
-    password = account['password']
-    use_proxy = account['use_proxy']
+    username = account['account_details']['username']
+    password = account['account_details']['password']
+    use_proxy = account['use_proxies']['use_proxy']
 
     settings_folder = "./artifacts/settings"
     os.makedirs(settings_folder, exist_ok=True)

@@ -3,17 +3,19 @@ import asyncio
 import os
 from typing import Union, List
 from instabot import utils
+import random
 
 async def upload_media(cl, account):
     utils.logger.info("Uploading media...")
 
     amount = account['upload_posts']['amount_per_day']
-    caption = account['upload_posts']['caption']
+    captions = account['upload_posts']['caption']
     posts_dir = account['upload_posts']['posts_dir']
     delete_after_upload = account['upload_posts']['delete_after_upload']
     medias = os.listdir(posts_dir)
 
     for media in medias:
+        caption = random.choice(captions)
         if is_post(media):
             upload_post(cl, media, posts_dir, caption, delete_after_upload)
         elif is_album(posts_dir, media):
