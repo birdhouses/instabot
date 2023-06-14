@@ -30,7 +30,7 @@ class ConfigManager:
             'download_posts_from_account_frame'
         ]
         for frame in frames:
-            frame_data = getattr(self.gui, frame).get()
+            frame_data, _ = getattr(self.gui, frame).get()  # Only store the data, not the index
             data.append([frame.replace('_frame', ''), frame_data])
         return data
 

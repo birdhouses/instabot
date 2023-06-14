@@ -63,18 +63,17 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
                 ('detect caption language', 'checkbox', 'detect_caption_language'),
                 ('caption languages (separeted by newline', 'textarea', 'languages'),
                 ('post types (seperated by newline)', 'textarea', 'allowed_post_types'),
+            ],
+            [
+                'author_requirements',
+                ('enabled', 'checkbox', 'enabled'),
+                ('biography keywords (seperated by newline)', 'textarea', 'biography_keywords'),
+                ('detect biography keywords', 'checkbox', 'detect_biography_keywords'),
+                ('detect biography language', 'checkbox', 'detect_biography_language'),
+                ('biography languages (separeted by newline)', 'textarea', 'languages'),
+                ('min followers', 'entry', 'min_followers'),
+                ('max following', 'entry', 'max_following')
             ]
-            # TODO: Fix multiple nested attributes in the same frame
-            # [
-            #     'autor requirements',
-            #     ('enabled', 'checkbox', 'enabled'),
-            #     ('biography keywords (seperated by newline)', 'textarea', 'biography_keywords'),
-            #     ('detect biography keywords', 'checkbox', 'detect_biography_keywords'),
-            #     ('detect biography language', 'checkbox', 'detect_biography_language'),
-            #     ('biography languages (separeted by newline)', 'textarea', 'languages'),
-            #     ('min followers', 'entry', 'min_followers'),
-            #     ('max following', 'entry', 'max_following')
-            # ]
         ])
         self.media_auto_discovery_frame.grid(row=5, column=0, padx=10, pady=(10, 0), sticky="ew")
 
@@ -124,6 +123,3 @@ class App(customtkinter.CTk):
 
 
         self.mainloop()
-
-    def show_configured_data(self):
-        data = ConfigManager.collect_configured_data(self)
