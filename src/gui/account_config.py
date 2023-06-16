@@ -109,7 +109,7 @@ class AccountConfigFrame(customtkinter.CTkFrame):
     def get_value(self, field_idx, field):
         value = self.inputs[field_idx][1].get() if field[1] != 'textarea' else self.inputs[field_idx][1].get('1.0', 'end')
         if field[1] == 'checkbox':
-            value = True if value == '1' else False
+            value = True if value == 1 else False
         elif field[1] == 'entry':
             value = int(value) if value.isdigit() else value
         elif field[1] == 'textarea':

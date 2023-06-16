@@ -34,11 +34,14 @@ class ConfigManager:
             data.append([frame.replace('_frame', ''), frame_data])
         return data
 
-    def write_to_config(self, data, filename='test.json'):
+    def write_to_config(self, data, filename='config.json'):
         new_account = self.format_data(data)
         try:
             with open(filename, 'r+') as f:
-                config = json.load(f)
+                if f.tell() == 0:  # The file pointer is at the start, meaning the file is empty.
+                    config = {'accounts': []}
+                else:
+                    config = json.load(f)
                 config['accounts'].append(new_account)
                 f.seek(0)
                 f.write(json.dumps(config, indent=4))

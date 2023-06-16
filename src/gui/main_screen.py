@@ -3,6 +3,7 @@ from gui.account_config import AccountConfigFrame
 from gui.utils import ConfigManager
 import os
 import json
+from screeninfo import get_monitors
 
 class ScrollableFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
@@ -109,17 +110,21 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
-        # self.attributes('-zoomed', True)
+        # TODO: make this configurable & fix window resizing
+        width, height = 1920, 1080
 
         theme_path = os.path.abspath('./gui/themes/main_theme.json')
         ConfigManager.create_gui_window(self,
                                 theme_path=theme_path,
                                 title='Account configurator',
-                                geometry='1920x1080',
+                                geometry=f'{width}x{height}',
                                 column_weight=0
                                 )
-        self.scrollable_frame = ScrollableFrame(self, width=1920, height=1080)
-        self.scrollable_frame.grid(row=0, column=0, padx=10, pady=(10,0))
 
+        frame_width = width * 0.95
+        frame_height = height * 0.8
+
+        self.scrollable_frame = ScrollableFrame(self, width=frame_width, height=frame_height)
+        self.scrollable_frame.grid(row=0, column=0, padx=10, pady=(10,0))
 
         self.mainloop()

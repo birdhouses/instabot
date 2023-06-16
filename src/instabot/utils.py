@@ -7,7 +7,7 @@ from instagrapi.exceptions import (
     PleaseWaitFewMinutes,
     RecaptchaChallengeForm,
     ReloginAttemptExceeded,
-    SelectContactPointRecoveryForm,
+    SelectContactPointRecoveryForm
 )
 from instagrapi.types import Media
 from requests.exceptions import RetryError
@@ -20,6 +20,7 @@ import logging
 import random
 from dateutil import parser
 import asyncio
+import instagrapi
 
 logs_dir = "./artifacts/logs/"
 if not os.path.exists(logs_dir):
@@ -142,7 +143,14 @@ async def get_client(account) -> Union[Client, None]:
             await freeze(e, 1)
             remove_session_and_login(client, username=username, password=password, session_file_path=session_file_path)
             return True
-        raise e
+        else:
+            retry_count = 1
+            freeze_time = retry_count * 4
+
+            freeze(e, freeze_time)
+
+            if retry_count < 3:
+                raise e
 
     client = Client()
 
