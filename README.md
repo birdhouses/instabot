@@ -48,6 +48,11 @@ Create a config.json file with your Instagram account credentials and desired se
 
 
 # Usage guide
+### Using GUI to add accounts
+In a terminal navigate to ```/src``` and run gui.py. A window will open where you fill in your required configurations. After you're done simply click on the "Add account" button and a new file called ```config.json``` will be created in the ```/src``` directory with the account data.
+If you accidentally added a account, you may manually remove it from the ```config.json``` file.
+
+Please note that this feature is still under development so it may work a bit cranky. Feel free to create an issue in the github repo with any errors you encounter.
 ### Uploading posts
 In order to upload posts you need to specify the source directory of where the files to be posted are stored.
 For example if you want to upload posts from the `/src/posts` folder (you'd need to create the `/posts` folder manually) then specify it as follows in the `config.json` file:
