@@ -22,12 +22,6 @@ Please consider donating to support development of the project
 - Automatically download posts from a specified tag, based on user requirements
 - Upload a configured amount of posts each day
 
-## Proxy configuration
-In the main directory of your Instagram Bot, create a file named proxies.txt. Each line in this file should represent a single proxy in the format IP:Port:Username:Password. For example:
-
-    123.45.67.89:8080:user1:pass1
-    98.76.54.32:8080:user2:pass2
-
 
 ## Prerequisites
 
@@ -44,15 +38,22 @@ Install the required Python packages:
 
     pip install -r requirements.txt
 
-Create a config.json file with your Instagram account credentials and desired settings (refer to the config.example.json file for an example configuration)
-
-
 # Usage guide
+### Run the bot:
+
+    /instabot/src python3.11 main.py
 ### Using GUI to add accounts
-In a terminal navigate to ```/src``` and run gui.py. A window will open where you fill in your required configurations. After you're done simply click on the "Add account" button and a new file called ```config.json``` will be created in the ```/src``` directory with the account data.
+In a terminal navigate to ```/instabot/src``` and run ```gui.py```. A window will open where you fill in your required configurations. After you're done simply click on the "Add account" button and a new file called ```config.json``` will be created in the ```/src``` directory with the account data.
 If you accidentally added a account, you may manually remove it from the ```config.json``` file.
 
-Please note that this feature is still under development so it may work a bit cranky. Feel free to create an issue in the github repo with any errors you encounter.
+Please note that this feature is still under development. Feel free to create an issue in the github repo with any errors you encounter.
+
+## Proxy configuration
+In the main directory of your Instagram Bot, create a file named proxies.txt. Each line in this file should represent a single proxy in the format IP:Port:Username:Password. For example:
+
+    123.45.67.89:8080:user1:pass1
+    98.76.54.32:8080:user2:pass2
+
 ### Uploading posts
 In order to upload posts you need to specify the source directory of where the files to be posted are stored.
 For example if you want to upload posts from the `/src/posts` folder (you'd need to create the `/posts` folder manually) then specify it as follows in the `config.json` file:
@@ -137,8 +138,4 @@ To comment on posts from a specified tag you can use the following settings:
             ]
             },
 This will automatically comment on 10 posts from a specified tag each day and select a random comment from the list of comments to comment.
-
-### Run the script:
-
-    /instabot/src python3.11 main.py
 
