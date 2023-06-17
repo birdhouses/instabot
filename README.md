@@ -41,7 +41,7 @@ Install the required Python packages:
 # Usage guide
 ### Run the bot:
 
-    /instabot/src python3.11 main.py
+    /instabot/src python3.11 gui.py
 ### Using GUI to add accounts
 In a terminal navigate to ```/instabot/src``` and run ```gui.py```. A window will open where you fill in your required configurations. After you're done simply click on the "Add account" button and a new file called ```config.json``` will be created in the ```/src``` directory with the account data.
 If you accidentally added a account, you may manually remove it from the ```config.json``` file.
