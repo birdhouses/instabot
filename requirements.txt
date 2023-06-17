@@ -3,4 +3,3 @@ instagrapi==1.17.5
 langdetect==1.0.9
 python_dateutil==2.8.2
 Requests==2.31.0
-screeninfo==0.8.1

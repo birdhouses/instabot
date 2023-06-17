@@ -3,7 +3,6 @@ from gui.account_config import AccountConfigFrame
 from gui.utils import ConfigManager
 import os
 import json
-from screeninfo import get_monitors
 
 class ScrollableFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master, account=None, parent=None, **kwargs):
