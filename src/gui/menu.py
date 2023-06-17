@@ -24,11 +24,11 @@ class MainMenu(tk.Frame):
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
 
-        account_frame = tk.Frame(self.scrollable_frame, bg='black')
-        account_frame.pack(fill="x")
-
-        configure_button = ctk.CTkButton(account_frame, text="Add account", command=lambda: self.configure_account())
-        configure_button.pack(side="right")
+        # Add title
+        title_frame = tk.Frame(self.scrollable_frame, bg='black')
+        title_frame.pack(fill="x")
+        title_label = ctk.CTkLabel(title_frame, text="Accounts", font=("Arial", 30))
+        title_label.pack(side="left")
 
     def add_account(self, account):
         account_frame = tk.Frame(self.scrollable_frame, bg='black')
@@ -37,7 +37,7 @@ class MainMenu(tk.Frame):
         username_label = ctk.CTkLabel(account_frame, text=account['account_details']['username'])
         username_label.pack(side="left")
 
-        configure_button = ctk.CTkButton(account_frame, text="Configure", command=lambda: self.configure_account(account))
+        configure_button = ctk.CTkButton(account_frame, text="Configure", font=("Arial", 15), command=lambda: self.configure_account(account))
         configure_button.pack(side="right")
 
     def configure_account(self, account=None):
@@ -63,8 +63,13 @@ class App():
 
         root = tk.Tk()
         root.configure(bg='black')
+
         menu = MainMenu(root)
         menu.pack(fill="both", expand=True)
+
+        # Add account button outside of the table
+        add_account_button = ctk.CTkButton(root, text="Add account", font=("Arial", 20), command=lambda: menu.configure_account())
+        add_account_button.pack(pady=10)
 
         # load accounts
         menu.load_accounts_from_file()
