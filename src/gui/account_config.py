@@ -43,48 +43,65 @@ class AccountConfigFrame(customtkinter.CTkFrame):
         label = field[0]
         field_type = field[1]
         field_key = [parent_field, field[2]]
+        default_value = field[3]
 
         if field_type == 'entry':
-            self.create_entry(self, row_index, label, field_key)
+            self.create_entry(self, row_index, label, field_key, default_value)
         elif field_type == 'checkbox':
-            self.create_checkbox(self, row_index, label, field_key)
+            self.create_checkbox(self, row_index, label, field_key, default_value)
         elif field_type == 'textarea':
-            self.create_textarea(row_index, label, field_key)
+            self.create_textarea(row_index, label, field_key, default_value)
 
     def add_field(self, field, row_index):
         label = field[0]
         field_type = field[1]
         field_key = field[2]
+        default_value = field[3]
 
         if field_type == 'entry':
-            self.create_entry(self, row_index, label, field_key)
+            self.create_entry(self, row_index, label, field_key, default_value)
         elif field_type == 'checkbox':
-            self.create_checkbox(self, row_index, label, field_key)
+            self.create_checkbox(self, row_index, label, field_key, default_value)
         elif field_type == 'textarea':
-            self.create_textarea(row_index, label, field_key)
+            self.create_textarea(row_index, label, field_key, default_value)
 
-    def create_entry(self, sus, row, label, field_key):
+    def create_entry(self, sus, row, label, field_key, default_value=None):
         entry_label = customtkinter.CTkLabel(self, text=label)
         entry_label.grid(row=row, column=0, padx=10, pady=(10, 0), sticky='w')
 
         entry = customtkinter.CTkEntry(self, width=400)
         entry.grid(row=row, column=1, padx=10, pady=(10, 0), sticky='ew')
+
+        if default_value is not None:
+            entry.insert(0, default_value)
+
         self.inputs.append([field_key, entry])
 
-    def create_checkbox(self, sus, row, label, field_key):
+    def create_checkbox(self, sus, row, label, field_key, default_value=None):
         checkbox_label = customtkinter.CTkLabel(self, text=label)
         checkbox_label.grid(row=row, column=0, padx=10, pady=(10, 0), sticky='w')
 
         checkbox = customtkinter.CTkCheckBox(self, text="", width=400)
         checkbox.grid(row=row, column=1, padx=10, pady=(10, 0), sticky='w')
+
+        if default_value is not None:
+            if default_value:
+                checkbox.select()
+            else:
+                checkbox.deselect()
+
         self.inputs.append([field_key, checkbox])
 
-    def create_textarea(self, row, label, field_key):
+    def create_textarea(self, row, label, field_key, default_value=None):
         textarea_label = customtkinter.CTkLabel(self, text=label)
         textarea_label.grid(row=row, column=0, padx=10, pady=(10, 0), sticky='w')
 
         textarea = customtkinter.CTkTextbox(self, height=100, width=600)
         textarea.grid(row=row, column=1, padx=10, pady=(10, 0), sticky='ew')
+
+        if default_value is not None:
+            textarea.insert('1.0', default_value)
+
         self.inputs.append([field_key, textarea])
 
 
