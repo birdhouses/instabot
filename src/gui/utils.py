@@ -1,5 +1,6 @@
 import json
 import customtkinter
+from tkinter import messagebox
 
 class ConfigManager:
     def __init__(self, gui):
@@ -16,6 +17,20 @@ class ConfigManager:
 
         gui_instance.grid_columnconfigure(column_count, weight=column_weight)
         gui_instance.grid_rowconfigure(row_count, weight=row_weight)
+
+    def validate_data(self, data):
+        # Check if the username or password fields are empty
+        for item in data:
+
+            # Check for the account_details field specifically
+            if item == "account_details":
+                if not data[item]["username"]:
+                    messagebox.showerror("Invalid data", "The username field is empty.")
+                    return False
+                elif not data[item]["password"]:
+                    messagebox.showerror("Invalid data", "The password field is empty.")
+                    return False
+        return True
 
     def collect_configured_data(self):
         data = []
@@ -36,6 +51,10 @@ class ConfigManager:
 
     def write_to_config(self, data, filename='config.json'):
         new_account = self.format_data(data)
+
+        if not self.validate_data(new_account):
+            return
+
         try:
             with open(filename, 'r+') as f:
                 config = json.load(f)
