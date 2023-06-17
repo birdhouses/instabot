@@ -2,6 +2,7 @@ import customtkinter as ctk
 import tkinter as tk
 from instabot import utils
 from . import main_screen
+import json
 
 class MainMenu(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -23,6 +24,12 @@ class MainMenu(tk.Frame):
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
 
+        account_frame = tk.Frame(self.scrollable_frame, bg='black')
+        account_frame.pack(fill="x")
+
+        configure_button = ctk.CTkButton(account_frame, text="Add account", command=lambda: self.configure_account())
+        configure_button.pack(side="right")
+
     def add_account(self, account):
         account_frame = tk.Frame(self.scrollable_frame, bg='black')
         account_frame.pack(fill="x")
@@ -33,12 +40,18 @@ class MainMenu(tk.Frame):
         configure_button = ctk.CTkButton(account_frame, text="Configure", command=lambda: self.configure_account(account))
         configure_button.pack(side="right")
 
-    def configure_account(self, account):
-        print(f"Configuring account: {account['account_details']['username']}")
+    def configure_account(self, account=None):
         main_screen.App(account=account)
 
     def load_accounts_from_file(self):
-        config = utils.load_config('./config.json')
+        try:
+            with open('./config.json', 'r+') as file:
+                config = json.load(file)
+        except FileNotFoundError:
+            with open('./config.json', 'w') as file:
+                config = {"accounts": []}
+                json.dump(config, file)
+
         accounts = config['accounts']
 
         for account in accounts:

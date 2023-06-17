@@ -38,10 +38,11 @@ class ConfigManager:
         new_account = self.format_data(data)
         try:
             with open(filename, 'r+') as f:
-                if f.tell() == 0:  # The file pointer is at the start, meaning the file is empty.
-                    config = {'accounts': []}
-                else:
-                    config = json.load(f)
+                config = json.load(f)
+
+                config['accounts'] = [account for account in config['accounts']
+                                  if account['account_details']['username'] != new_account['account_details']['username']]
+
                 config['accounts'].append(new_account)
                 f.seek(0)
                 f.write(json.dumps(config, indent=4))
