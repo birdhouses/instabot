@@ -3,6 +3,7 @@ import tkinter as tk
 from instabot import utils
 from . import main_screen
 import json
+import subprocess
 
 class MainMenu(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -87,6 +88,9 @@ class MainMenu(tk.Frame):
         # Reload accounts
         self.load_accounts_from_file()
 
+    def run_bot(self):
+        subprocess.run(["python3.11", "main.py"])
+
 class App():
     def __init__(self):
         super().__init__()
@@ -106,6 +110,10 @@ class App():
         # Add account button outside of the table
         add_account_button = ctk.CTkButton(root, text="Add account", font=("Arial", 20), command=lambda: menu.configure_account())
         add_account_button.grid(pady=10)
+
+        # Add account button outside of the table
+        run_bot_button = ctk.CTkButton(root, text="Start bot", font=("Arial", 20), command=lambda: menu.run_bot())
+        run_bot_button.grid(pady=10)
 
         # load accounts
         menu.load_accounts_from_file()
