@@ -58,7 +58,15 @@ class MainMenu(tk.Frame):
             self.add_account(account)
 
     def configure_account(self, account=None):
-        main_screen.App(account=account)
+        main_screen.App(account=account, parent=self)
+
+    def refresh_accounts(self):
+        # Clear current accounts
+        for widget in self.scrollable_frame.winfo_children():
+            widget.destroy()
+
+        # Reload accounts
+        self.load_accounts_from_file()
 
 class App():
     def __init__(self):

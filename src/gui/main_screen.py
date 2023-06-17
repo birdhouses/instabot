@@ -6,9 +6,10 @@ import json
 from screeninfo import get_monitors
 
 class ScrollableFrame(customtkinter.CTkScrollableFrame):
-    def __init__(self, master, account=None, **kwargs):
+    def __init__(self, master, account=None, parent=None, **kwargs):
         super().__init__(master, **kwargs)
         self.gui = self
+        self.parent = parent
 
         def get_default_value(keys):
             value = account
@@ -112,10 +113,10 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
     def show_configured_data(self):
         config_manager = ConfigManager(self.gui)
         data = config_manager.collect_configured_data()
-        config_manager.write_to_config(data)
+        config_manager.write_to_config(data, menu=self.parent)
 
 class App(customtkinter.CTk):
-    def __init__(self, account=None):
+    def __init__(self, account=None, parent=None):
         super().__init__()
 
         # TODO: make this configurable & fix window resizing
@@ -132,7 +133,7 @@ class App(customtkinter.CTk):
         frame_width = width * 0.95
         frame_height = height * 0.8
 
-        self.scrollable_frame = ScrollableFrame(self, width=frame_width, height=frame_height, account=account)
+        self.scrollable_frame = ScrollableFrame(self, width=frame_width, height=frame_height, account=account, parent=parent)
         self.scrollable_frame.grid(row=0, column=0, padx=10, pady=(10,0))
 
         self.mainloop()

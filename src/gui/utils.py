@@ -49,7 +49,7 @@ class ConfigManager:
             data.append([frame.replace('_frame', ''), frame_data])
         return data
 
-    def write_to_config(self, data, filename='config.json'):
+    def write_to_config(self, data, filename='config.json', menu=None):
         new_account = self.format_data(data)
 
         if not self.validate_data(new_account):
@@ -70,6 +70,10 @@ class ConfigManager:
             with open(filename, 'w+') as f:
                 config = {'accounts': [new_account]}
                 f.write(json.dumps(config, indent=4))
+
+        # Update the GUI
+        if menu is not None:
+            menu.refresh_accounts()
 
     def format_data(self, data: list) -> str:
         formatted_data = {}
