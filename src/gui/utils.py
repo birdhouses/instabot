@@ -1,5 +1,6 @@
 import json
 import customtkinter
+from tkinter import messagebox
 
 class ConfigManager:
     def __init__(self, gui):
@@ -16,6 +17,20 @@ class ConfigManager:
 
         gui_instance.grid_columnconfigure(column_count, weight=column_weight)
         gui_instance.grid_rowconfigure(row_count, weight=row_weight)
+
+    def validate_data(self, data):
+        # Check if the username or password fields are empty
+        for item in data:
+
+            # Check for the account_details field specifically
+            if item == "account_details":
+                if not data[item]["username"]:
+                    messagebox.showerror("Invalid data", "The username field is empty.")
+                    return False
+                elif not data[item]["password"]:
+                    messagebox.showerror("Invalid data", "The password field is empty.")
+                    return False
+        return True
 
     def collect_configured_data(self):
         data = []
@@ -34,14 +49,19 @@ class ConfigManager:
             data.append([frame.replace('_frame', ''), frame_data])
         return data
 
-    def write_to_config(self, data, filename='config.json'):
+    def write_to_config(self, data, filename='config.json', menu=None):
         new_account = self.format_data(data)
+
+        if not self.validate_data(new_account):
+            return
+
         try:
             with open(filename, 'r+') as f:
-                if f.tell() == 0:  # The file pointer is at the start, meaning the file is empty.
-                    config = {'accounts': []}
-                else:
-                    config = json.load(f)
+                config = json.load(f)
+
+                config['accounts'] = [account for account in config['accounts']
+                                  if account['account_details']['username'] != new_account['account_details']['username']]
+
                 config['accounts'].append(new_account)
                 f.seek(0)
                 f.write(json.dumps(config, indent=4))
@@ -50,6 +70,10 @@ class ConfigManager:
             with open(filename, 'w+') as f:
                 config = {'accounts': [new_account]}
                 f.write(json.dumps(config, indent=4))
+
+        # Update the GUI
+        if menu is not None:
+            menu.refresh_accounts()
 
     def format_data(self, data: list) -> str:
         formatted_data = {}
