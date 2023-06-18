@@ -79,6 +79,8 @@ def upload_album(cl, album: str, posts_dir, caption: str, delete_after_upload: b
             output_path = image_path.replace(".webp", ".jpg")  # replace .webp with .jpg in the file path
             utils.convert_webp_to_jpg(image_path, output_path)
             new_paths.append(output_path)  # Append the new path to new_paths
+        elif is_video(image_path):
+            new_paths.append(image_path)  # Append the new path to new_paths
 
     cl.album_upload(new_paths, caption)  # Use new_paths here instead of paths
 
@@ -102,6 +104,9 @@ def get_posts(post_dir: str) -> List[str]:
     for file in os.listdir(post_dir):
         if os.path.isfile(post_dir + '/' + file):
             posts.append(file)
+
+    posts = sorted(posts, key=lambda filename: int(filename.split('_')[0]))
+
     return filter_posts(posts)
 
 def get_albums(post_dir: str) -> List[str]:
@@ -112,7 +117,7 @@ def get_albums(post_dir: str) -> List[str]:
     return albums
 
 def filter_posts(posts):
-    valid_images = [".jpg", ".webp", ".png"]
+    valid_images = [".jpg", ".webp", ".png", ".mp4"]
     valid_posts = []
     for post in posts:
         ext = os.path.splitext(post)[1]

@@ -35,6 +35,9 @@ async def download_media(cl, account):
         elif media_info['media_type'] == 8:
             album_path = f"{post_download_path}/{post.pk}"
             os.makedirs(album_path, exist_ok=True)
-            cl.album_download(post.pk, album_path)
+            result = cl.album_download(post.pk, album_path)
+            for i, path in enumerate(result):
+                new_path = path.parent / f"{i}_{path.name}"  # Add the index number to the filename
+                path.rename(new_path)  # Rename the file
 
     instabot.utils.logger.info(f"Downloaded {amount} posts from {source_account}")
