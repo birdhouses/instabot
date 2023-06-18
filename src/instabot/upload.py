@@ -4,6 +4,7 @@ import os
 from typing import Union, List
 from instabot import utils
 import random
+import shutil
 
 async def upload_media(cl, account):
     utils.logger.info("Uploading media...")
@@ -52,10 +53,18 @@ def upload_album(cl, album: str, posts_dir, caption: str, delete_after_upload: b
     for path in posts:
         paths.append(path_to_album + '/' + path)
 
-    cl.album_upload(paths, caption)
+    new_paths = []  # This will hold the paths for the converted images
+
+    for image_path in paths:
+        if is_post(image_path):
+            output_path = image_path.replace(".webp", ".jpg")  # replace .webp with .jpg in the file path
+            utils.convert_webp_to_jpg(image_path, output_path)
+            new_paths.append(output_path)  # Append the new path to new_paths
+
+    cl.album_upload(new_paths, caption)  # Use new_paths here instead of paths
 
     if delete_after_upload:
-        os.remove(path_to_album)
+        shutil.rmtree(path_to_album)  # Delete the entire album folder
 
     utils.logger.info(f"Uploaded {album}")
 
