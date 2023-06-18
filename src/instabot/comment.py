@@ -5,7 +5,6 @@ import datetime
 import random
 import asyncio
 from instabot import utils
-from instabot import media
 
 async def comment_on_media(cl: Client, account: Dict[str, Any]):
     comment_on_tag = account['comment_on_media']['comment_on_tag']
