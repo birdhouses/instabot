@@ -92,46 +92,6 @@ To download posts from one instagram account, you need to specify the username o
 Make sure the `source_account` is public. You can specify the amount of posts you want to download, and the timeout between each download.
 It should be noted that this task does not use authentication, which means that it is not possible to use proxies for this task. (Because the get_client method handles authentication & proxies properly).
 
-### Media auto discovery
-The media auto discovery feature allows you to automatically discover new posts from a specified tag. You can configure the requirements for a post to be discovered in the `config.json` file. If a post matches the requirements specified, it will be automatically downloaded. Here is an example configuration that will automatically discover posts from the `#memes` tag:
-
-    "media_auto_discovery": {
-          "enabled": true,
-          "from_tag": "memes",
-          "amount_per_day": 50,
-          "save_captions": true,
-          "avoid_duplicates": true,
-          "request_timeout": 5,
-          "post_requirements": {
-            "min_likes": 1,
-            "min_comments": 1,
-            "detect_caption_language": true,
-            "languages": ["en"],
-            "allowed_post_types": [
-              "photo",
-              "video",
-              "igtv",
-              "reel",
-              "album"
-            ]
-          },
-          "author_requirements": {
-            "enabled": true,
-            "biography_keywords": [
-              "memes",
-              "meme",
-              "funny"
-            ],
-            "detect_biography_keywords": true,
-            "detect_biography_language": true,
-            "languages": ["en"],
-            "min_followers": 1,
-            "max_following": 1000
-          }
-        },
-
-This feature might not work properly yet, but it can be useful in cases where you just want to find posts that might be worth downloading. Feel free to disable some settings if you encounter any issues and report them to the community.
-
 ### Commenting on posts
 To comment on posts from a specified tag you can use the following settings:
 
