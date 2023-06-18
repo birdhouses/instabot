@@ -58,34 +58,6 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
         ])
         self.comment_on_media_frame.grid(row=4, column=0, padx=10, pady=(10, 0), sticky="ew")
 
-        self.media_auto_discovery_frame = AccountConfigFrame(self, frame_title='media auto discovery', fields=[
-            ('enabled', 'checkbox', 'enabled', get_default_value(['media_auto_discovery', 'enabled'])),
-            ('from tag', 'entry', 'from_tag', get_default_value(['media_auto_discovery', 'from_tag'])),
-            ('amount per day', 'entry', 'amount_per_day', get_default_value(['media_auto_discovery', 'amount_per_day'])),
-            ('save captions', 'checkbox', 'save_captions', get_default_value(['media_auto_discovery','save_captions'])),
-            ('avoid duplicates', 'checkbox', 'avoid_duplicates', get_default_value(['media_auto_discovery', 'avoid_duplicates'])),
-            ('request timeout', 'entry', 'request_timeout', get_default_value(['media_auto_discovery', 'request_timeout'])),
-            [
-                'post_requirements',
-                ('min likes', 'entry', 'min_likes', get_default_value(['media_auto_discovery', 'post_requirements','min_likes'])),
-                ('min comments', 'entry', 'min_comments', get_default_value(['media_auto_discovery', 'post_requirements','min_comments'])),
-                ('detect caption language', 'checkbox', 'detect_caption_language', get_default_value(['media_auto_discovery', 'post_requirements', 'detect_caption_language'])),
-                ('caption languages (separeted by newline', 'textarea', 'languages', get_default_value(['media_auto_discovery', 'post_requirements', 'languages'])),
-                ('post types (seperated by newline)', 'textarea', 'allowed_post_types', get_default_value(['media_auto_discovery', 'post_requirements', 'allowed_post_types'])),
-            ],
-            [
-                'author_requirements',
-                ('enabled', 'checkbox', 'enabled', get_default_value(['media_auto_discovery', 'author_requirements', 'enabled'])),
-                ('biography keywords (seperated by newline)', 'textarea', 'biography_keywords', get_default_value(['media_auto_discovery', 'author_requirements', 'biography_keywords'])),
-                ('detect biography keywords', 'checkbox', 'detect_biography_keywords', get_default_value(['media_auto_discovery', 'author_requirements', 'detect_biography_keywords'])),
-                ('detect biography language', 'checkbox', 'detect_biography_language', get_default_value(['media_auto_discovery', 'author_requirements', 'detect_biography_language'])),
-                ('biography languages (separeted by newline)', 'textarea', 'languages', get_default_value(['media_auto_discovery', 'author_requirements', 'languages'])),
-                ('min followers', 'entry', 'min_followers', get_default_value(['media_auto_discovery', 'author_requirements','min_followers'])),
-                ('max following', 'entry', 'max_following', get_default_value(['media_auto_discovery', 'author_requirements','max_following'])),
-            ]
-        ])
-        self.media_auto_discovery_frame.grid(row=5, column=0, padx=10, pady=(10, 0), sticky="ew")
-
         self.upload_posts_frame = AccountConfigFrame(self, frame_title='upload posts', fields=[
             ('enabled', 'checkbox', 'enabled', get_default_value(['upload_posts', 'enabled'])),
             ('amount per day', 'entry', 'amount_per_day', get_default_value(['upload_posts', 'amount_per_day'])),

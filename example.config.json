@@ -26,39 +26,6 @@
           "Comments ..."
         ]
       },
-      "media_auto_discovery": {
-        "enabled": true,
-        "request_timeout": 60,
-        "from_tag": "instagram",
-        "amount_per_day": 2,
-        "save_captions": true,
-        "avoid_duplicates": true,
-        "post_requirements": {
-          "min_likes": 1,
-          "min_comments": 1,
-          "detect_caption_language": true,
-          "languages": ["en"],
-          "allowed_post_types": [
-            "photo",
-            "video",
-            "igtv",
-            "reel",
-            "album"
-          ]
-        },
-        "author_requirements": {
-          "enabled": true,
-          "detect_biography_keywords": false,
-          "biography_keywords": [
-            "keyword",
-            "another one"
-          ],
-          "detect_biography_language": true,
-          "languages": ["en"],
-          "min_followers": 1,
-          "max_following": 1000
-        }
-      },
       "upload_posts": {
         "enabled": true,
         "amount_per_day": 3,
