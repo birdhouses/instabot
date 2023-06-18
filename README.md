@@ -40,8 +40,14 @@ Install the required Python packages:
 
 # Usage guide
 ### Run the bot:
+Open the GUI
 
     /instabot/src python3.11 gui.py
+
+If you want to run the without the gui, you can run
+
+    /instabot/src python3.11 main.py
+
 ### Using GUI to add accounts
 In a terminal navigate to ```/instabot/src``` and run ```gui.py```. A window will open where you fill in your required configurations. After you're done simply click on the "Add account" button and a new file called ```config.json``` will be created in the ```/src``` directory with the account data.
 If you accidentally added a account, you may manually remove it from the ```config.json``` file.
@@ -65,7 +71,7 @@ For example if you want to upload posts from the `/src/posts` folder (you'd need
         "delete_after_upload": true,
         "caption": "Cool caption.."
       },
-The folder structure for the files to be depends on if you want to upload single posts or albums. Here is an example configuration that will upload 1 single post and 1 album containing 2 pictures:
+The folder structure for the files to be depends on if you want to upload single posts or albums. Here is an example folder structure that will upload 1 single post and 1 album containing 2 pictures:
 
     /posts
         /image_1.jpg
@@ -78,6 +84,7 @@ To download posts from one instagram account, you need to specify the username o
 
     "download_posts_from_account": {
           "enabled": false,
+          "save_path": "./posts",
           "source_account": "instagram",
           "amount": 5,
           "timeout": 2
