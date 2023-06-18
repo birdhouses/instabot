@@ -101,6 +101,7 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             fields=[
                 ('enabled', 'checkbox', 'enabled', get_default_value(['download_posts_from_account', 'enabled'])),
                 ('from account', 'entry', 'source_account', get_default_value(['download_posts_from_account','source_account'])),
+                ('path to save to', 'entry', 'save_path', get_default_value(['download_posts_from_account', 'save_path'])),
                 ('amount', 'entry', 'amount', get_default_value(['download_posts_from_account', 'amount'])),
                 ('request timeout', 'entry', 'timeout', get_default_value(['download_posts_from_account','timeout']))
         ])
