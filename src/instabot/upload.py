@@ -5,6 +5,7 @@ from typing import Union, List
 from instabot import utils
 import random
 import shutil
+from humanfriendly import format_timespan
 
 async def upload_media(cl, account):
     utils.logger.info("Uploading media...")
@@ -16,6 +17,13 @@ async def upload_media(cl, account):
     medias = os.listdir(posts_dir)
 
     for media in medias:
+        sleep_time = utils.calculate_sleep_time(amount)
+
+        humanfriendly_time = format_timespan(sleep_time)
+        utils.logger.info(f"Sleeping for {humanfriendly_time} before posting")
+
+        await asyncio.sleep(sleep_time)
+
         caption = random.choice(captions)
         if is_post(media):
             upload_post(cl, media, posts_dir, caption, delete_after_upload)
@@ -26,9 +34,6 @@ async def upload_media(cl, account):
         else:
             utils.logger.warning(f"{media} is not a valid post or album.")
             continue
-
-        sleep_time = utils.calculate_sleep_time(amount)
-        await asyncio.sleep(sleep_time)
 
 def is_video(media: str) -> bool:
     return media.endswith('.mp4')

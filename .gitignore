@@ -12,7 +12,7 @@ session.json
 /src/artifacts/*
 /src/saved_posts/
 /src/scheduled_posts/*
-/src/test
+/src/posts
 # C extensions
 *.so
 
