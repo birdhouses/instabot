@@ -14,13 +14,10 @@ Please consider donating to support development of the project
 ## Current Features
 - Follow users from specified source accounts
 - Unfollow users after a configured amount of time
-- Follow a configurable number of users daily
 - Post comments on recent posts by a specified hashtag
-- Like a number of posts after following a user
+- Upload a configured amount of posts each day
 - Using multiple accounts at the same time
 - Proxy support for making requests
-- Automatically download posts from a specified tag, based on user requirements
-- Upload a configured amount of posts each day
 
 
 ## Prerequisites
