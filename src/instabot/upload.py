@@ -6,10 +6,12 @@ from instabot import utils
 import random
 import shutil
 from humanfriendly import format_timespan
+from instabot.timekeeper import TimeKeeper
 
 async def upload_media(cl, account):
     utils.logger.info("Uploading media...")
 
+    username = account['account_details']['username']
     amount = account['upload_posts']['amount_per_day']
     captions = account['upload_posts']['caption']
     posts_dir = account['upload_posts']['posts_dir']
@@ -19,8 +21,7 @@ async def upload_media(cl, account):
     for media in medias:
         sleep_time = utils.calculate_sleep_time(amount)
 
-        humanfriendly_time = format_timespan(sleep_time)
-        utils.logger.info(f"Sleeping for {humanfriendly_time} before posting")
+        TimeKeeper(username, 'upload_media', sleep_time)
 
         await asyncio.sleep(sleep_time)
 

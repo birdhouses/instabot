@@ -179,8 +179,8 @@ def get_followers(cl: Client, user_id: int, amount: int) -> List[str]:
 
 def calculate_sleep_time(actions_per_day: int) -> float:
     average_sleep_time = 86400 / actions_per_day
-    min_sleep_time = average_sleep_time * 0.5
-    max_sleep_time = average_sleep_time * 1.5
+    min_sleep_time = average_sleep_time * 0.9
+    max_sleep_time = average_sleep_time * 1.2
     return random.uniform(min_sleep_time, max_sleep_time)
 
 def parse_time_string(time_string: str) -> int:

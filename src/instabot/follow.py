@@ -9,6 +9,7 @@ import asyncio
 import instabot
 from instabot import utils
 from instabot import like
+
 followed_users_folder = "./artifacts/logs/followed_users"
 
 def save_followed_user(cl: Client, user_id: int) -> None:
