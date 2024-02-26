@@ -41,7 +41,8 @@ class ConfigManager:
             'unfollow_users_frame',
             'comment_on_media_frame',
             'upload_posts_frame',
-            'download_posts_from_account_frame'
+            'download_posts_from_account_frame',
+            'dm_accounts_from_list_frame'
         ]
         for frame in frames:
             frame_data, _ = getattr(self.gui, frame).get()  # Only store the data, not the index

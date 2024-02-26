@@ -38,6 +38,17 @@
         "source_account": "instagram",
         "amount": 5,
         "timeout": 2
+      },
+      "dm_accounts_from_list": {
+          "enabled": true,
+          "message": [
+              "Hey! \n\n This is a cool DM!"
+            ],
+          "accounts": [
+              "username1",
+              "username2"
+          ],
+          "timeout": 60
       }
     }
   ]

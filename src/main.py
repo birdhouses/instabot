@@ -1,4 +1,4 @@
-from instabot import utils, follow, comment, upload, download
+from instabot import utils, follow, comment, upload, download, dm
 import asyncio
 from threading import Thread
 from instagrapi import Client
@@ -33,6 +33,11 @@ async def main(account):
             cl = Client()
             download_task = tg.create_task(
                 download.download_media(cl, account)
+            )
+        if account['dm_accounts_from_list']['enabled']:
+            cl = await utils.get_client(account)
+            dm_task = tg.create_task(
+                dm.dm_from_list(cl, account)
             )
 
 def run_account(account):

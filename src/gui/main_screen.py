@@ -79,8 +79,19 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
         ])
         self.download_posts_from_account_frame.grid(row=7, column=0, padx=10, pady=(10, 0), sticky="ew")
 
+        self.dm_accounts_from_list_frame = AccountConfigFrame(
+            self,
+            frame_title='DM accounts from specified list',
+            fields=[
+                ('enabled', 'checkbox', 'enabled', get_default_value(['dm_accounts_from_list', 'enabled'])),
+                ('message', 'textarea', 'message', get_default_value(['dm_accounts_from_list', 'message'])),
+                ('accounts (seperated by newline)', 'textarea', 'accounts', get_default_value(['dm_accounts_from_list', 'accounts'])),
+                ('request timeout', 'entry', 'timeout', get_default_value(['dm_accounts_from_list','timeout']))
+        ])
+        self.dm_accounts_from_list_frame.grid(row=8, column=0, padx=10, pady=(10, 0), sticky="ew")
+
         self.button = customtkinter.CTkButton(self, text="Add account", command=self.show_configured_data)
-        self.button.grid(row=8, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
+        self.button.grid(row=9, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
 
     def show_configured_data(self):
         config_manager = ConfigManager(self.gui)
