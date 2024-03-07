@@ -51,6 +51,11 @@ If you accidentally added a account, you may manually remove it from the ```conf
 
 Please note that this feature is still under development. Feel free to create an issue in the github repo with any errors you encounter.
 
+## DM Automation
+To send automatically send DMs to users you need to manually specify a list of usernames to send the DM's to. Using the GUI, each username must be on a newline in the textarea.
+You can also modify the config.json manually, and provide an array of usernames in the `dm_accounts_from_list.accounts` setting. You can set the `timeout` in seconds between each DM. 
+You can specify the `message`. This needs to be a single-line string.
+
 ## Proxy configuration
 In the main directory of your Instagram Bot, create a file named proxies.txt. Each line in this file should represent a single proxy in the format IP:Port:Username:Password. For example:
 
