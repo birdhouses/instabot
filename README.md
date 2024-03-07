@@ -12,6 +12,7 @@ Please consider donating to support development of the project
 
 
 ## Current Features
+- Automatically send DM's
 - Follow users from specified source accounts
 - Unfollow users after a configured amount of time
 - Post comments on recent posts by a specified hashtag
