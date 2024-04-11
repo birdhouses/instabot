@@ -7,6 +7,7 @@ import random
 import shutil
 from humanfriendly import format_timespan
 from instabot.timekeeper import TimeKeeper
+import re
 
 async def upload_media(cl, account):
     utils.logger.info("Uploading media...")
@@ -17,6 +18,10 @@ async def upload_media(cl, account):
     posts_dir = account['upload_posts']['posts_dir']
     delete_after_upload = account['upload_posts']['delete_after_upload']
     medias = os.listdir(posts_dir)
+
+    ### MAKE THIS CONFIGURABLE ###
+    random.shuffle(medias)
+    ##############################
 
     for media in medias:
         sleep_time = utils.calculate_sleep_time(amount)
@@ -78,20 +83,20 @@ def upload_album(cl, album: str, posts_dir, caption: str, delete_after_upload: b
     for path in posts:
         paths.append(path_to_album + '/' + path)
 
-    new_paths = []  # This will hold the paths for the converted images
+    new_paths = []
 
     for image_path in paths:
         if is_post(image_path):
-            output_path = image_path.replace(".webp", ".jpg")  # replace .webp with .jpg in the file path
+            output_path = image_path.replace(".webp", ".jpg")
             utils.convert_webp_to_jpg(image_path, output_path)
-            new_paths.append(output_path)  # Append the new path to new_paths
+            new_paths.append(output_path)
         elif is_video(image_path):
-            new_paths.append(image_path)  # Append the new path to new_paths
+            new_paths.append(image_path)
 
-    cl.album_upload(new_paths, caption)  # Use new_paths here instead of paths
+    cl.album_upload(new_paths, caption)
 
     if delete_after_upload:
-        shutil.rmtree(path_to_album)  # Delete the entire album folder
+        shutil.rmtree(path_to_album)
 
     utils.logger.info(f"Uploaded {album}")
 
@@ -105,13 +110,23 @@ def upload_post(cl, path, posts_dir, caption, delete_after_upload):
 
         utils.logger.info(f"Uploaded {path}")
 
-def get_posts(post_dir: str) -> List[str]:
+def get_posts(directory: str) -> List[str]:
     posts = []
-    for file in os.listdir(post_dir):
-        if os.path.isfile(post_dir + '/' + file):
-            posts.append(file)
 
-    posts = sorted(posts, key=lambda filename: int(filename.split('_')[0]))
+                                        #### Fix this ####
+    ###  FILES IN ALBUM FOLDER NAMES SHOULD BE IN THE FORMAT YYYY-MM-DD_HH-MM-SS_UTC_[INDEX_NUMBER] ###
+
+    for filename in os.listdir(directory):
+        pattern = r'^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}_UTC(_\d+)?\.(jpg|jpeg|png|mp4|avi|mov)$'
+
+        if re.match(pattern, filename, re.IGNORECASE):
+            posts.append(filename)
+        else:
+            utils.logger.warning(f"Ignoring file with unexpected name format: {filename}")
+
+    posts = sorted(posts, key=lambda filename: int(filename.split('_')[2]))
+
+    ##########################################################################
 
     return filter_posts(posts)
 

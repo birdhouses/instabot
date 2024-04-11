@@ -4,3 +4,4 @@ instagrapi==2.0.3
 Pillow==9.5.0
 python_dateutil==2.8.2
 Requests==2.31.0
+moviepy
