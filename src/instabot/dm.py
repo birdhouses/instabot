@@ -11,12 +11,16 @@ async def dm_from_list(cl: Client, account: Dict[str, Any]):
     message = account['dm_accounts_from_list']['message']
 
     for _account in account['dm_accounts_from_list']['accounts']:
-        sleep_time = get_human_interval(amount)
-        TimeKeeper(username, 'dm_account', sleep_time)
+        try:
+            sleep_time = get_human_interval(amount)
+            TimeKeeper(username, 'dm_account', sleep_time)
 
-        await asyncio.sleep(sleep_time)
+            await asyncio.sleep(sleep_time)
 
-        send_dm(client=cl, username=_account, message=message)
+            send_dm(client=cl, username=_account, message=message)
+        except Exception as e:
+            utils.logger.exception('Error while trying to send dm')
+            continue
 
 def send_dm(client: Client, username: str, message: str):
     """
