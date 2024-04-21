@@ -112,23 +112,19 @@ def upload_post(cl, path, posts_dir, caption, delete_after_upload):
 
 def get_posts(directory: str) -> List[str]:
     posts = []
-
-                                        #### Fix this ####
-    ###  FILES IN ALBUM FOLDER NAMES SHOULD BE IN THE FORMAT YYYY-MM-DD_HH-MM-SS_UTC_[INDEX_NUMBER] ###
+    pattern = r'^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}_UTC_(\d+)\.(jpg|jpeg|png|mp4|avi|mov)$'
 
     for filename in os.listdir(directory):
-        pattern = r'^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}_UTC(_\d+)?\.(jpg|jpeg|png|mp4|avi|mov)$'
-
         if re.match(pattern, filename, re.IGNORECASE):
             posts.append(filename)
         else:
+            # Log a warning or handle files with unexpected names as needed
             utils.logger.warning(f"Ignoring file with unexpected name format: {filename}")
 
-    posts = sorted(posts, key=lambda filename: int(filename.split('_')[2]))
+    # Ensure the lambda only attempts to convert a well-formatted index number to integer
+    posts.sort(key=lambda filename: int(re.search(r'_(\d+)\.', filename).group(1)))
 
-    ##########################################################################
-
-    return filter_posts(posts)
+    return posts
 
 def get_albums(post_dir: str) -> List[str]:
     albums = []
