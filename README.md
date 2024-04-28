@@ -12,13 +12,13 @@ Please consider donating to support development of the project
 
 
 ## Current Features
-- Automatically send DM's
-- Follow users from specified source accounts
-- Unfollow users after a configured amount of time
+- Automated posting
+- Automated stories
+- Automated Direct Messaging (mass DM's)
+- Follow / unfollowing
 - Post comments on recent posts by a specified hashtag
-- Upload a configured amount of posts each day
 - Using multiple accounts at the same time
-- Proxy support for making requests
+- Proxy support for making requests (unstable)
 
 
 ## Prerequisites
@@ -81,7 +81,23 @@ The folder structure for the files to be depends on if you want to upload single
         /album_1
             /image_1.jpg
             /image_2.jpg
+            
+### Uploading stories
+For example if you want to upload posts from the `/src/posts` folder (you'd need to create the `/posts` folder manually) then specify it as follows in the `config.json` file:
 
+    "upload_stories": {
+        "enabled": true,
+        "amount_per_day": 3,
+        "posts_dir": "./posts",
+        "delete_after_upload": true,
+        "caption": "Cool caption.."
+      },
+Example folder structure:
+
+    /posts
+        /image_1.jpg
+        /video_1.mp4
+        
 ### Downloading posts from a specified instagram account
 To download posts from one instagram account, you need to specify the username of the instagram account in the `config.json` file:
 
