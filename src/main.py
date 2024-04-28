@@ -29,6 +29,12 @@ async def main(account):
             upload_task = tg.create_task(
                 upload.upload_media(cl, account)
             )
+        if account['upload_stories']['enabled']:
+            cl = await utils.get_client(account)
+            upload_task = tg.create_task(
+                upload.upload_stories(cl, account)
+            )
+
         if account['download_posts_from_account']['enabled']:
             cl = Client()
             download_task = tg.create_task(

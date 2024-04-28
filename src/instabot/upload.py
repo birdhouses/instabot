@@ -143,3 +143,59 @@ def filter_posts(posts):
         valid_posts.append(post)
 
     return valid_posts
+
+async def upload_stories(cl, account):
+    utils.logger.info("Uploading story...")
+    username = account['account_details']['username']
+    amount = account['upload_stories']['amount_per_day']
+    captions = account['upload_stories']['caption']
+    posts_dir = account['upload_stories']['posts_dir']
+    delete_after_upload = account['upload_stories']['delete_after_upload']
+    medias = os.listdir(posts_dir)
+
+    ### MAKE THIS CONFIGURABLE ###
+    random.shuffle(medias)
+    ##############################
+
+    for media in medias:
+        sleep_time = utils.calculate_sleep_time(amount)
+
+        TimeKeeper(username, 'upload_story', sleep_time)
+
+        await asyncio.sleep(sleep_time)
+
+        caption = random.choice(captions)
+        if is_post(media):
+            upload_story_post(cl, media, posts_dir, caption, delete_after_upload)
+        elif is_video(media):
+            upload_story_video(cl, media, posts_dir, caption, delete_after_upload)
+        elif is_album(posts_dir, media):
+            ## invalid operation, skipping.
+            utils.logger.warning(f"{media} An album can't be uploaded as a story.")
+        else:
+            utils.logger.warning(f"{media} is not in a valid story format.")
+            continue
+
+def upload_story_post(cl, path, posts_dir, caption, delete_after_upload):
+        path_to_post = posts_dir + '/' + path
+
+        cl.photo_upload_to_story(path_to_post, caption)
+
+        if delete_after_upload:
+            os.remove(path_to_post)
+
+        utils.logger.info(f"Uploaded {path}")
+
+def upload_story_video(cl, path, posts_dir, caption, delete_after_upload):
+    path_to_post = posts_dir + '/' + path
+
+    try:
+        cl.video_upload_to_story(path_to_post, caption)
+    except Exception as e:
+        utils.logger.error(f"Error uploading {path}: {e}")
+        return
+
+    if delete_after_upload:
+        os.remove(path_to_post)
+
+    utils.logger.info(f"Uploaded {path}")

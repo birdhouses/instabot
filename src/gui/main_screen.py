@@ -67,6 +67,15 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
         ])
         self.upload_posts_frame.grid(row=6, column=0, padx=10, pady=(10, 0), sticky="ew")
 
+        self.upload_stories_frame = AccountConfigFrame(self, frame_title='upload stories', fields=[
+            ('enabled', 'checkbox', 'enabled', get_default_value(['upload_stories', 'enabled'])),
+            ('amount per day', 'entry', 'amount_per_day', get_default_value(['upload_stories', 'amount_per_day'])),
+            ('posts_dir', 'entry', 'posts_dir', get_default_value(['upload_stories', 'posts_dir'])),
+            ('delete file after upload', 'checkbox', 'delete_after_upload', get_default_value(['upload_stories', 'delete_after_upload'])),
+            ('caption (seperated by newline)', 'textarea', 'caption', get_default_value(['upload_stories', 'caption']))
+        ])
+        self.upload_stories_frame.grid(row=7, column=0, padx=10, pady=(10, 0), sticky="ew")
+
         self.download_posts_from_account_frame = AccountConfigFrame(
             self,
             frame_title='download posts from account',
@@ -77,7 +86,7 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
                 ('amount', 'entry', 'amount', get_default_value(['download_posts_from_account', 'amount'])),
                 ('request timeout', 'entry', 'timeout', get_default_value(['download_posts_from_account','timeout']))
         ])
-        self.download_posts_from_account_frame.grid(row=7, column=0, padx=10, pady=(10, 0), sticky="ew")
+        self.download_posts_from_account_frame.grid(row=8, column=0, padx=10, pady=(10, 0), sticky="ew")
 
         self.dm_accounts_from_list_frame = AccountConfigFrame(
             self,
@@ -88,10 +97,10 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
                 ('accounts (seperated by newline)', 'textarea', 'accounts', get_default_value(['dm_accounts_from_list', 'accounts'])),
                 ('request timeout', 'entry', 'timeout', get_default_value(['dm_accounts_from_list','timeout']))
         ])
-        self.dm_accounts_from_list_frame.grid(row=8, column=0, padx=10, pady=(10, 0), sticky="ew")
+        self.dm_accounts_from_list_frame.grid(row=9, column=0, padx=10, pady=(10, 0), sticky="ew")
 
         self.button = customtkinter.CTkButton(self, text="Add account", command=self.show_configured_data)
-        self.button.grid(row=9, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
+        self.button.grid(row=10, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
 
     def show_configured_data(self):
         config_manager = ConfigManager(self.gui)

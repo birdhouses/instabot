@@ -33,6 +33,15 @@
         "delete_after_upload": true,
         "caption": "Cool caption.."
       },
+      "upload_stories": {
+        "enabled": true,
+        "amount_per_day": 2,
+        "posts_dir": "/path_to_stories",
+        "delete_after_upload": true,
+        "caption": [
+            "Cool video caption..."
+        ]
+    },
       "download_posts_from_account": {
         "enabled": true,
         "source_account": "instagram",
