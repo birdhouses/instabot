@@ -54,7 +54,7 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             ('enabled', 'checkbox', 'enabled', get_default_value(['comment_on_media', 'enabled'])),
             ('comment on tag', 'entry', 'comment_on_tag', get_default_value(['comment_on_media', 'comment_on_tag'])),
             ('amount per day', 'entry', 'amount_per_day', get_default_value(['comment_on_media', 'amount_per_day'])),
-            ('comments (seperated by newline)', 'textarea', 'comments', get_default_value(['comment_on_media', 'comments']))
+            ('comments (separated by newline)', 'textarea', 'comments', get_default_value(['comment_on_media', 'comments']))
         ])
         self.comment_on_media_frame.grid(row=4, column=0, padx=10, pady=(10, 0), sticky="ew")
 
@@ -63,7 +63,8 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             ('amount per day', 'entry', 'amount_per_day', get_default_value(['upload_posts', 'amount_per_day'])),
             ('posts_dir', 'entry', 'posts_dir', get_default_value(['upload_posts', 'posts_dir'])),
             ('delete file after upload', 'checkbox', 'delete_after_upload', get_default_value(['upload_posts', 'delete_after_upload'])),
-            ('caption (seperated by newline)', 'textarea', 'caption', get_default_value(['upload_posts', 'caption']))
+            ('caption (separated by newline)', 'textarea', 'caption', get_default_value(['upload_posts', 'caption'])),
+            ('captions file', 'entry', 'captions_file', get_default_value(['upload_posts', 'captions_file']))  # New field
         ])
         self.upload_posts_frame.grid(row=6, column=0, padx=10, pady=(10, 0), sticky="ew")
 
@@ -72,7 +73,8 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             ('amount per day', 'entry', 'amount_per_day', get_default_value(['upload_stories', 'amount_per_day'])),
             ('posts_dir', 'entry', 'posts_dir', get_default_value(['upload_stories', 'posts_dir'])),
             ('delete file after upload', 'checkbox', 'delete_after_upload', get_default_value(['upload_stories', 'delete_after_upload'])),
-            ('caption (seperated by newline)', 'textarea', 'caption', get_default_value(['upload_stories', 'caption']))
+            ('caption (separated by newline)', 'textarea', 'caption', get_default_value(['upload_stories', 'caption'])),
+            ('captions file', 'entry', 'captions_file', get_default_value(['upload_stories', 'captions_file']))  # New field
         ])
         self.upload_stories_frame.grid(row=7, column=0, padx=10, pady=(10, 0), sticky="ew")
 
@@ -94,7 +96,7 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             fields=[
                 ('enabled', 'checkbox', 'enabled', get_default_value(['dm_accounts_from_list', 'enabled'])),
                 ('message', 'textarea', 'message', get_default_value(['dm_accounts_from_list', 'message'])),
-                ('accounts (seperated by newline)', 'textarea', 'accounts', get_default_value(['dm_accounts_from_list', 'accounts'])),
+                ('accounts (separated by newline)', 'textarea', 'accounts', get_default_value(['dm_accounts_from_list', 'accounts'])),
                 ('request timeout', 'entry', 'timeout', get_default_value(['dm_accounts_from_list','timeout']))
         ])
         self.dm_accounts_from_list_frame.grid(row=9, column=0, padx=10, pady=(10, 0), sticky="ew")

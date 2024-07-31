@@ -14,7 +14,7 @@ async def upload_media(cl, account):
 
     username = account['account_details']['username']
     amount = account['upload_posts']['amount_per_day']
-    captions = account['upload_posts']['caption']
+    captions_file = account['upload_posts'].get('captions_file')  # Captions file path
     posts_dir = account['upload_posts']['posts_dir']
     delete_after_upload = account['upload_posts']['delete_after_upload']
     medias = os.listdir(posts_dir)
@@ -23,14 +23,14 @@ async def upload_media(cl, account):
     random.shuffle(medias)
     ##############################
 
+    captions = load_captions(captions_file)
+
     for media in medias:
         sleep_time = utils.calculate_sleep_time(amount)
-
         TimeKeeper(username, 'upload_media', sleep_time)
-
         await asyncio.sleep(sleep_time)
 
-        caption = random.choice(captions)
+        caption = captions.get(media, random.choice(list(captions.values())))  # Get caption or random
         if is_post(media):
             upload_post(cl, media, posts_dir, caption, delete_after_upload)
         elif is_album(posts_dir, media):
@@ -69,11 +69,7 @@ def is_album(posts_dir: str, path: str) -> bool:
 def is_post(path: str) -> bool:
     valid_images = [".jpg", ".webp", ".png"]
     ext = os.path.splitext(path)[1]
-    if ext.lower() not in valid_images:
-
-        return False
-
-    return True
+    return ext.lower() in valid_images
 
 def upload_album(cl, album: str, posts_dir, caption: str, delete_after_upload: bool):
     path_to_album = posts_dir + '/' + album
@@ -101,14 +97,17 @@ def upload_album(cl, album: str, posts_dir, caption: str, delete_after_upload: b
     utils.logger.info(f"Uploaded {album}")
 
 def upload_post(cl, path, posts_dir, caption, delete_after_upload):
-        path_to_post = posts_dir + '/' + path
-
+    path_to_post = posts_dir + '/' + path
+    try:
         cl.photo_upload(path_to_post, caption)
+    except Exception as e:
+        utils.logger.error(f"Error uploading {path}: {e}")
+        return
 
-        if delete_after_upload:
-            os.remove(path_to_post)
+    if delete_after_upload:
+        os.remove(path_to_post)
 
-        utils.logger.info(f"Uploaded {path}")
+    utils.logger.info(f"Uploaded {path}")
 
 def get_posts(directory: str) -> List[str]:
     posts = []
@@ -148,7 +147,7 @@ async def upload_stories(cl, account):
     utils.logger.info("Uploading story...")
     username = account['account_details']['username']
     amount = account['upload_stories']['amount_per_day']
-    captions = account['upload_stories']['caption']
+    captions_file = account['upload_stories'].get('captions_file')  # Captions file path
     posts_dir = account['upload_stories']['posts_dir']
     delete_after_upload = account['upload_stories']['delete_after_upload']
     medias = os.listdir(posts_dir)
@@ -157,14 +156,14 @@ async def upload_stories(cl, account):
     random.shuffle(medias)
     ##############################
 
+    captions = load_captions(captions_file)
+
     for media in medias:
         sleep_time = utils.calculate_sleep_time(amount)
-
         TimeKeeper(username, 'upload_story', sleep_time)
-
         await asyncio.sleep(sleep_time)
 
-        caption = random.choice(captions)
+        caption = captions.get(media, random.choice(list(captions.values())))  # Get caption or random
         if is_post(media):
             upload_story_post(cl, media, posts_dir, caption, delete_after_upload)
         elif is_video(media):
@@ -177,14 +176,18 @@ async def upload_stories(cl, account):
             continue
 
 def upload_story_post(cl, path, posts_dir, caption, delete_after_upload):
-        path_to_post = posts_dir + '/' + path
+    path_to_post = posts_dir + '/' + path
 
+    try:
         cl.photo_upload_to_story(path_to_post, caption)
+    except Exception as e:
+        utils.logger.error(f"Error uploading story post {path}: {e}")
+        return
 
-        if delete_after_upload:
-            os.remove(path_to_post)
+    if delete_after_upload:
+        os.remove(path_to_post)
 
-        utils.logger.info(f"Uploaded {path}")
+    utils.logger.info(f"Uploaded {path}")
 
 def upload_story_video(cl, path, posts_dir, caption, delete_after_upload):
     path_to_post = posts_dir + '/' + path
@@ -192,10 +195,29 @@ def upload_story_video(cl, path, posts_dir, caption, delete_after_upload):
     try:
         cl.video_upload_to_story(path_to_post, caption)
     except Exception as e:
-        utils.logger.error(f"Error uploading {path}: {e}")
+        utils.logger.error(f"Error uploading story video {path}: {e}")
         return
 
     if delete_after_upload:
         os.remove(path_to_post)
 
     utils.logger.info(f"Uploaded {path}")
+
+def load_captions(captions_file: str) -> dict:
+    captions = {}
+    if not captions_file:
+        return captions
+
+    try:
+        with open(captions_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                parts = line.strip().split('|')
+                if len(parts) == 2:
+                    media, caption = parts
+                    captions[media] = caption
+    except FileNotFoundError:
+        utils.logger.warning(f"Captions file {captions_file} not found.")
+    except Exception as e:
+        utils.logger.error(f"Error reading captions file {captions_file}: {e}")
+
+    return captions
