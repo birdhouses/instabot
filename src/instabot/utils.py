@@ -46,7 +46,22 @@ def get_approximate_sleep_time(days=0, hours=0, minutes=0) -> int:
     return random.uniform(min_time, max_time)
 
 def convert_webp_to_jpg(image_path, output_path):
-    Image.open(image_path).save(output_path, "JPEG")
+    """Converts a WEBP image to JPG."""
+    try:
+        Image.open(image_path).convert("RGB").save(output_path, "JPEG")
+        logger.info(f"Converted WEBP to JPG: {output_path}")
+    except Exception as e:
+        logger.error(f"Error converting WEBP to JPG for {image_path}: {e}")
+        raise
+
+def convert_png_to_jpg(image_path, output_path):
+    """Converts a PNG image to JPG."""
+    try:
+        Image.open(image_path).convert("RGB").save(output_path, "JPEG")
+        logger.info(f"Converted PNG to JPG: {output_path}")
+    except Exception as e:
+        logger.error(f"Error converting PNG to JPG for {image_path}: {e}")
+        raise
 
 def load_config(file_path: str) -> dict:
     with open(file_path, 'r') as file:
